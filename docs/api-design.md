@@ -37,7 +37,6 @@
 ```json
 {
   "title": "飲み会候補",
-  "ownerName": "山田太郎",
   "slotSizeMinutes": 30,
   "timeSlots": [
     { "slotStart": "2025-06-01T13:00:00Z" },
@@ -65,7 +64,6 @@
   "schedule": {
     "id": "clwxyz123",
     "title": "飲み会候補",
-    "ownerName": "山田太郎",
     "slotSizeMinutes": 30,
     "timeSlots": [
       { "id": "slot1", "slotStart": "2025-06-01T13:00:00Z" },

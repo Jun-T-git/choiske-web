@@ -105,7 +105,7 @@ sequenceDiagram
     Webブラウザ->>サーバー(Next.js API): 日程調整データ取得
     サーバー(Next.js API)->>DB: データ取得
     サーバー(Next.js API)-->>Webブラウザ: データ返却
-    Webブラウザ->>参加者: スロットごとに可否選択・コメント入力
+    Webブラウザ
     参加者->>Webブラウザ: 回答送信
     Webブラウザ->>サーバー(Next.js API): 回答データ送信
     サーバー(Next.js API)->>DB: 回答保存

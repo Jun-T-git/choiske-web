@@ -24,7 +24,7 @@
 
 ### schedules
 
-- 日程調整の親エンティティ。タイトル、主催者名、スロットサイズ、作成日時、有効期限などを持つ。
+- 日程調整の親エンティティ。タイトル、スロットサイズ、作成日時、有効期限などを持つ。
 
 ### time_slots
 
@@ -57,7 +57,6 @@
 | ----------------- | ------------ | ------ | -------- | ----------------- | ------------------------ |
 | id                | VARCHAR(36)  | ○      | ○        | UUID 等           | スケジュール ID          |
 | title             | VARCHAR(255) |        | ○        |                   | タイトル                 |
-| owner_name        | VARCHAR(100) |        |          |                   | 主催者名                 |
 | slot_size_minutes | INT          |        | ○        | 30                | スロットの長さ（分単位） |
 | created_at        | DATETIME     |        | ○        | CURRENT_TIMESTAMP | 作成日時                 |
 | expires_at        | DATETIME     |        | ○        |                   | 有効期限                 |
@@ -121,7 +120,6 @@ erDiagram
     schedules {
         string id PK
         string title
-        string owner_name
         int slot_size_minutes
         datetime created_at
         datetime expires_at
