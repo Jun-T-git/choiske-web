@@ -1,1 +1,12 @@
 @import "tailwindcss";
+
+/* カレンダーライブラリ固有のヘッダが英語表記なので削除する */
+.rdp-month_caption {
+  display: none !important;
+}
+.rdp-chevron {
+  display: none !important;
+}
+.rdp-months {
+  margin: 0 auto !important;
+}
