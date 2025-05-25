@@ -2,13 +2,10 @@ import { useState } from "react";
 
 /**
  * カレンダー・候補日選択・曜日/月一括トグルなど日付選択に関するロジックをまとめたカスタムフック
- * UIや動作はScheduleForm.tsxと同一
  */
-export function useScheduleCalendar() {
-  // タイトル入力
-  const [title, setTitle] = useState("");
+export function useDateSelect(initialSelectedDays: Date[] = []) {
   // 選択中の日付リスト
-  const [selectedDays, setSelectedDays] = useState<Date[]>([]);
+  const [selectedDays, setSelectedDays] = useState<Date[]>(initialSelectedDays);
   // カレンダー表示中の月
   const [month, setMonth] = useState(new Date());
   // エラーメッセージ
@@ -58,8 +55,6 @@ export function useScheduleCalendar() {
       );
     }
   };
-  // リセット
-  const resetSelectedDays = () => setSelectedDays([]);
   // 月移動
   const goPrevMonth = () =>
     setMonth(new Date(month.getFullYear(), month.getMonth() - 1, 1));
@@ -102,8 +97,6 @@ export function useScheduleCalendar() {
   const [showBatchSelect, setShowBatchSelect] = useState(false);
 
   return {
-    title,
-    setTitle,
     selectedDays,
     setSelectedDays,
     month,
@@ -118,6 +111,5 @@ export function useScheduleCalendar() {
     setShowBatchSelect,
     goPrevMonth,
     goNextMonth,
-    resetSelectedDays,
   };
 }

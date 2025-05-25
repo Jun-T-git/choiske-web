@@ -1,6 +1,6 @@
-# API 設計書（2025 年 5 月版・可変スロット対応）
+# API 設計書（2025 年 5 月版・可変スロット対応・現行実装準拠）
 
-本ドキュメントは「チョイスケ」Web サービスの主要な API 設計（可変スロット対応）をまとめたものです。
+本ドキュメントは「チョイスケ」Web サービスの API 設計です。
 
 ---
 
@@ -38,6 +38,7 @@
 {
   "title": "飲み会候補",
   "slotSizeMinutes": 30,
+  "description": "6月の飲み会候補日です。ご都合を教えてください。", // 任意
   "timeSlots": [
     { "slotStart": "2025-06-01T13:00:00Z" },
     { "slotStart": "2025-06-01T18:00:00Z" }
@@ -65,6 +66,7 @@
     "id": "clwxyz123",
     "title": "飲み会候補",
     "slotSizeMinutes": 30,
+    "description": "6月の飲み会候補日です。ご都合を教えてください。", // 任意
     "timeSlots": [
       { "id": "slot1", "slotStart": "2025-06-01T13:00:00Z" },
       { "id": "slot2", "slotStart": "2025-06-01T18:00:00Z" }
@@ -73,7 +75,7 @@
       {
         "id": "ans1",
         "name": "佐藤花子",
-        "comment": "遅れて参加するかもです",
+        "comment": "遅れて参加するかもです", // 任意
         "responses": [
           { "slotId": "slot1", "status": 1 },
           { "slotId": "slot2", "status": 3 }
@@ -82,8 +84,7 @@
         "updatedAt": "2025-05-17T12:00:00Z"
       }
     ],
-    "createdAt": "2025-05-17T11:00:00Z",
-    "expiresAt": "2025-06-17T11:00:00Z"
+    "createdAt": "2025-05-17T11:00:00Z"
   }
 }
 ```
@@ -110,7 +111,7 @@
 ```json
 {
   "name": "佐藤花子",
-  "comment": "遅れて参加するかもです",
+  "comment": "遅れて参加するかもです", // 任意
   "responses": [
     { "slotId": "slot1", "status": 1 },
     { "slotId": "slot2", "status": 3 }
@@ -133,7 +134,7 @@
 
 ```json
 {
-  "comment": "やっぱり最初から参加できます",
+  "comment": "やっぱり最初から参加できます", // 任意
   "responses": [
     { "slotId": "slot1", "status": 1 },
     { "slotId": "slot2", "status": 1 }
@@ -203,7 +204,3 @@
 - 2 = NG（参加不可）
 - 0 = 未回答
 - 3 = 未確定
-
----
-
-ご要望や仕様変更があれば随時見直します。

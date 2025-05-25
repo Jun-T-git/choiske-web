@@ -1,6 +1,6 @@
 "use client";
 
-import { ScheduleForm } from "@/components/ScheduleForm";
+import { ScheduleForm } from "@/components/templates/ScheduleForm";
 import { ReactNode } from "react";
 
 /**

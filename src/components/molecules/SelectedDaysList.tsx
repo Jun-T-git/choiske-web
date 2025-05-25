@@ -1,3 +1,4 @@
+import { formatMonthDay } from "@/lib/utils/dateUtils";
 import { FC, useState } from "react";
 
 interface SelectedDaysListProps {
@@ -30,12 +31,12 @@ export const SelectedDaysList: FC<SelectedDaysListProps> = ({
           候補日が選択されていません
         </span>
       )}
-      {visibleDays.map((d, idx) => (
+      {visibleDays.map((d) => (
         <span
-          key={idx}
+          key={formatMonthDay(d)}
           className="bg-blue-100 text-blue-700 rounded-full px-3 py-1 text-sm flex items-center gap-1"
         >
-          {d.toLocaleDateString()}
+          {formatMonthDay(d)}
           <button
             type="button"
             className="ml-1 text-blue-400 hover:text-red-500"

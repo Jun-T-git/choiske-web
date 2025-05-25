@@ -1,5 +1,6 @@
 import { FC } from "react";
-import { TimeAdjustPanel } from "./TimeAdjustPanel";
+import { SectionHeading } from "../atoms/SectionHeading";
+import { TimeAdjustPanel } from "../molecules/TimeAdjustPanel";
 
 /**
  * 時間調整セクション
@@ -21,6 +22,7 @@ export const TimeAdjustSection: FC<{
   setTimeTo: (v: string) => void;
   slotSize: number;
   setSlotSize: (v: number) => void;
+  mode?: "create" | "edit";
 }> = ({
   withTime,
   setWithTime,
@@ -30,11 +32,10 @@ export const TimeAdjustSection: FC<{
   setTimeTo,
   slotSize,
   setSlotSize,
+  mode = "create",
 }) => (
   <section>
-    <h3 className="text-md font-bold text-gray-700 mb-2 mt-4">
-      3. 時間を調整する（任意）
-    </h3>
+    <SectionHeading step={3}>時間を調整する（任意）</SectionHeading>
     <p className="text-xs text-gray-500 mb-3">
       必要な場合のみ「時間も調整する」を選択してください
     </p>
@@ -47,6 +48,7 @@ export const TimeAdjustSection: FC<{
       setTimeTo={setTimeTo}
       slotSize={slotSize}
       setSlotSize={setSlotSize}
+      mode={mode} // 編集モードでは一部編集不可
     />
   </section>
 );

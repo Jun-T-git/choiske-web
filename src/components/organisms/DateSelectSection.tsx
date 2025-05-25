@@ -1,7 +1,8 @@
 import { FC } from "react";
-import { BatchSelectPanel } from "./BatchSelectPanel";
-import { CalendarSelector } from "./CalendarSelector";
-import { SelectedDaysList } from "./SelectedDaysList";
+import { SectionHeading } from "../atoms/SectionHeading";
+import { BatchSelectPanel } from "../molecules/BatchSelectPanel";
+import { CalendarSelector } from "../molecules/CalendarSelector";
+import { SelectedDaysList } from "../molecules/SelectedDaysList";
 
 /**
  * 候補日選択・カレンダー・バッチ・まとめて選択セクション
@@ -38,9 +39,7 @@ export const DateSelectSection: FC<{
   const WEEK_LABELS = ["日", "月", "火", "水", "木", "金", "土"];
   return (
     <section>
-      <h3 className="text-md font-bold text-gray-700 mb-2 mt-4">
-        2. 候補日をカレンダーから選択
-      </h3>
+      <SectionHeading step={2}>候補日をカレンダーから選択</SectionHeading>
       <p className="text-xs text-gray-500 mb-3">
         カレンダーをタップして候補日を選択できます。もう一度タップで解除できます。
       </p>
@@ -48,7 +47,7 @@ export const DateSelectSection: FC<{
         <div className="flex items-center justify-between mb-2 mt-2">
           <button
             type="button"
-            className="px-3 py-2 rounded-lg text-xs font-semibold text-gray-700"
+            className="px-3 py-2 rounded-lg text-xs font-semibold text-gray-700 hover:text-gray-400"
             onClick={goPrevMonth}
           >
             ＜ 前の月
@@ -58,7 +57,7 @@ export const DateSelectSection: FC<{
           </span>
           <button
             type="button"
-            className="px-3 py-2 rounded-lg text-xs font-semibold text-gray-700"
+            className="px-3 py-2 rounded-lg text-xs font-semibold text-gray-700 hover:text-gray-400"
             onClick={goNextMonth}
           >
             次の月 ＞
@@ -91,6 +90,15 @@ export const DateSelectSection: FC<{
       />
       <div className="text-xs text-blue-600 mt-2 font-semibold">
         {selectedDays.length}日選択中
+        {selectedDays.length > 0 && (
+          <button
+            type="button"
+            className="ml-4 px-2 py-1 rounded bg-red-100 text-red-600 border border-red-200 text-xs font-bold hover:bg-red-200 transition"
+            onClick={() => setSelectedDays([])}
+          >
+            候補日を全て削除する
+          </button>
+        )}
       </div>
       {error && (
         <div className="text-red-500 text-base mt-2 font-bold drop-shadow">

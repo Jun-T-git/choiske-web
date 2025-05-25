@@ -1,0 +1,47 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Schedule {
+  id              String      @id @default(nanoid())
+  title           String
+  description     String?
+  slotSizeMinutes Int         @map("slot_size_minutes")
+  publicToken     String      @map("public_token") @unique @default(nanoid())
+  createdAt       DateTime    @default(now()) @map("created_at")
+  expiresAt       DateTime    @map("expires_at")
+  timeSlots       TimeSlot[]
+  answers         Answer[]
+}
+
+model TimeSlot {
+  id           String      @id @default(nanoid())
+  schedule     Schedule    @relation(fields: [scheduleId], references: [id])
+  scheduleId   String      @map("schedule_id")
+  slotStart    DateTime    @map("slot_start")
+  slotResponses SlotResponse[]
+}
+
+model Answer {
+  id           String      @id @default(nanoid())
+  schedule     Schedule    @relation(fields: [scheduleId], references: [id])
+  scheduleId   String      @map("schedule_id")
+  name         String?
+  comment      String?
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
+  slotResponses SlotResponse[]
+}
+
+model SlotResponse {
+  id        String    @id @default(nanoid())
+  answer    Answer    @relation(fields: [answerId], references: [id])
+  answerId  String    @map("answer_id")
+  slot      TimeSlot  @relation(fields: [slotId], references: [id])
+  slotId    String    @map("slot_id")
+  status    Int
+}

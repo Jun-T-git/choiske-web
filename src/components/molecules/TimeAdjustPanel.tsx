@@ -1,3 +1,4 @@
+import { TimeInput } from "@/components/atoms/TimeInput";
 import { FC } from "react";
 
 interface TimeAdjustPanelProps {
@@ -9,6 +10,7 @@ interface TimeAdjustPanelProps {
   setTimeTo: (v: string) => void;
   slotSize: number;
   setSlotSize: (v: number) => void;
+  mode?: "create" | "edit";
 }
 
 /**
@@ -31,62 +33,70 @@ export const TimeAdjustPanel: FC<TimeAdjustPanelProps> = ({
   setTimeTo,
   slotSize,
   setSlotSize,
+  mode = "create",
 }) => (
   <fieldset className="">
     <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-2">
-      <label className="flex-1 flex items-center gap-2 cursor-pointer py-2 px-3 rounded-lg border border-blue-100 bg-white hover:bg-blue-50 transition text-sm text-gray-800">
+      <span className="text-xs text-gray-400 ml-1 font-normal">
+        ※この項目は後から変更できません
+      </span>
+      <label
+        className={`flex-1 flex items-center gap-2 cursor-pointer py-2 px-3 rounded-lg border border-blue-100 bg-white hover:bg-blue-50 transition text-sm text-gray-800 ${
+          mode === "create"
+            ? ""
+            : "bg-gray-100 text-gray-400 cursor-not-allowed opacity-70"
+        }`}
+      >
         <input
           type="radio"
           checked={!withTime}
           onChange={() => setWithTime(false)}
           className="accent-blue-500"
           name="withTime"
+          disabled={mode !== "create"}
         />
-        <span>時間は調整しない（終日）</span>
+        <span>時間は調整しない（日付のみ）</span>
       </label>
-      <label className="flex-1 flex items-center gap-2 cursor-pointer py-2 px-3 rounded-lg border border-blue-100 bg-white hover:bg-blue-50 transition text-sm text-gray-800">
+      <label
+        className={`flex-1 flex items-center gap-2 cursor-pointer py-2 px-3 rounded-lg border border-blue-100 bg-white hover:bg-blue-50 transition text-sm text-gray-800 ${
+          mode === "create"
+            ? ""
+            : "bg-gray-100 text-gray-400 cursor-not-allowed opacity-70"
+        }`}
+      >
         <input
           type="radio"
           checked={withTime}
           onChange={() => setWithTime(true)}
           className="accent-blue-500"
           name="withTime"
+          disabled={mode !== "create"}
         />
         <span>時間も調整する</span>
       </label>
     </div>
     {withTime && (
       <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:gap-4 items-center">
-        <label className="flex flex-col items-start gap-1 w-full">
-          <span className="text-sm text-gray-700 font-semibold">開始</span>
-          <input
-            type="time"
-            className="border border-gray-300 rounded-lg px-2 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-base"
-            value={timeFrom}
-            onChange={(e) => setTimeFrom(e.target.value)}
-          />
-        </label>
+        <TimeInput label="開始" value={timeFrom} onChange={setTimeFrom} />
         <span className="text-gray-500 hidden sm:inline-block">〜</span>
+        <TimeInput label="終了" value={timeTo} onChange={setTimeTo} />
         <label className="flex flex-col items-start gap-1 w-full">
-          <span className="text-sm text-gray-700 font-semibold">終了</span>
-          <input
-            type="time"
-            className="border border-gray-300 rounded-lg px-2 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-base"
-            value={timeTo}
-            onChange={(e) => setTimeTo(e.target.value)}
-          />
-        </label>
-        <label className="flex flex-col items-start gap-1 w-full">
-          <span className="text-sm text-gray-700 font-semibold">
-            選択可能な単位
+          <span className="text-sm text-gray-700 font-semibold flex items-end gap-2">
+            調整可能な単位
+            <span className="text-xs text-gray-400 ml-1 font-normal">
+              ※この項目は後から変更できません
+            </span>
           </span>
           <select
-            className="border border-gray-300 rounded-lg px-2 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-base"
+            className={`border border-gray-300 rounded-lg px-2 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-base ${
+              mode === "create"
+                ? ""
+                : "bg-gray-100 text-gray-400 cursor-not-allowed opacity-70"
+            }`}
             value={slotSize}
             onChange={(e) => setSlotSize(Number(e.target.value))}
+            disabled={mode !== "create"}
           >
-            <option value={0}>1日ごと（時間区切りなし）</option>
-            <option value={15}>15分ごと</option>
             <option value={30}>30分ごと</option>
             <option value={60}>1時間ごと</option>
           </select>

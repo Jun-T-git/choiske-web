@@ -35,7 +35,10 @@ export const CalendarSelector: FC<CalendarSelectorProps> = ({
     month={month}
     onMonthChange={setMonth}
     className="mx-auto"
-    modifiersClassNames={{ selected: "!bg-blue-500 !text-white" }}
+    modifiersClassNames={{
+      selected: "!bg-blue-500 !text-white",
+      today: "!text-green-500",
+    }}
     locale={ja}
   />
 );
