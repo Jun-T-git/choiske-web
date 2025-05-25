@@ -1,36 +1,26 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# チョイスケ Web サービス
 
-## Getting Started
+「チョイスケ」は、会員登録不要・無料で使えるシンプルなスケジュール調整 Web サービスです。
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## プロジェクト概要
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- 直感的な UI で日程調整が可能
+- 回答集計・決定・通知までワンストップ
+- 広告モデルによる無料提供
+- Next.js + TypeScript ベース
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ドキュメント一覧
 
-## Learn More
+- [要件定義書](./docs/requirements.md)
+- [画面遷移設計](./docs/flow.md)
+- [API 設計書](./docs/api-design.md)
+- [DB 設計書](./docs/db-design.md)
+- [テーブル定義書](./docs/table-definition.md)
+- [技術選定](./docs/tech-stack.md)
+- [ディレクトリ構成](./docs/structure.md)
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
