@@ -30,7 +30,7 @@ model Answer {
   id           String      @id @default(nanoid())
   schedule     Schedule    @relation(fields: [scheduleId], references: [id])
   scheduleId   String      @map("schedule_id")
-  name         String?
+  name         String
   comment      String?
   createdAt    DateTime    @default(now()) @map("created_at")
   updatedAt    DateTime    @updatedAt @map("updated_at")

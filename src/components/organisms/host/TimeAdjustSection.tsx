@@ -1,6 +1,6 @@
 import { FC } from "react";
-import { SectionHeading } from "../atoms/SectionHeading";
-import { TimeAdjustPanel } from "../molecules/TimeAdjustPanel";
+import { SectionHeading } from "../../atoms/SectionHeading";
+import { TimeAdjustPanel } from "../../molecules/TimeAdjustPanel";
 
 /**
  * 時間調整セクション

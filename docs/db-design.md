@@ -131,7 +131,7 @@ erDiagram
         datetime expires_at
     }
     TimeSlot {
-        string id PK
+        string id
         string schedule_id FK
         datetime slot_start
     }

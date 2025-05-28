@@ -1,8 +1,8 @@
 import { FC } from "react";
-import { SectionHeading } from "../atoms/SectionHeading";
-import { BatchSelectPanel } from "../molecules/BatchSelectPanel";
-import { CalendarSelector } from "../molecules/CalendarSelector";
-import { SelectedDaysList } from "../molecules/SelectedDaysList";
+import { SectionHeading } from "../../atoms/SectionHeading";
+import { BatchSelectPanel } from "../../molecules/BatchSelectPanel";
+import { CalendarSelector } from "../../molecules/CalendarSelector";
+import { SelectedDaysList } from "../../molecules/SelectedDaysList";
 
 /**
  * 候補日選択・カレンダー・バッチ・まとめて選択セクション

@@ -1,8 +1,8 @@
 "use client";
 
-import { DateSelectSection } from "@/components/organisms/DateSelectSection";
-import { TimeAdjustSection } from "@/components/organisms/TimeAdjustSection";
-import { TitleInputSection } from "@/components/organisms/TitleInputSection";
+import { DateSelectSection } from "@/components/organisms/host/DateSelectSection";
+import { TimeAdjustSection } from "@/components/organisms/host/TimeAdjustSection";
+import { TitleInputSection } from "@/components/organisms/host/TitleInputSection";
 import { createSchedule, updateSchedule } from "@/lib/queries/schedule";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -104,8 +104,14 @@ export const ScheduleForm: React.FC<ScheduleFormProps> = ({
         .flat();
       const slotSizeSubmit = withTime ? slotSize : 1440; // 終日選択時は1440分（1日）
       const data = scheduleId
-        ? await updateSchedule(scheduleId, title, slotSizeSubmit, slots)
-        : await createSchedule(title, slotSizeSubmit, slots);
+        ? await updateSchedule(
+            scheduleId,
+            title,
+            description,
+            slotSizeSubmit,
+            slots
+          )
+        : await createSchedule(title, description, slotSizeSubmit, slots);
       // 成功した場合は作成完了画面に遷移
       if (data) {
         const savedScheduleId = data;

@@ -3,9 +3,10 @@ import {
   CreateScheduleInput as BaseInput,
   createSchedule as createScheduleClient,
   getScheduleById as getScheduleByIdClient,
+  getScheduleByToken as getScheduleByTokenClient,
   updateSchedule as updateScheduleClient
 } from "@/server/client/scheduleClient";
-import { Schedule, ScheduleSummary } from "@/types/schedule";
+import { Schedule, ScheduleSummary, ScheduleWithAnswers } from "@/types/schedule";
 import { TimeSlot } from "@/types/timeSlot";
 
 export type CreateScheduleInput = Omit<BaseInput, "expiresAt"> & { expiresAt?: Date };
@@ -58,6 +59,23 @@ export async function getScheduleById(scheduleId: string): Promise<Schedule & {t
 }
 
 /**
+ * publicTokenからスケジュールを取得
+ * @param publicToken パブリックトークン
+ * @returns スケジュールデータ（TimeSlot含む）またはnull
+ */
+export async function getScheduleByToken(publicToken: string): Promise<Schedule & {timeSlots: TimeSlot[]} | null> {
+  const schedule = await getScheduleByTokenClient(publicToken, false);
+  if (!schedule) {
+    return null;
+  }
+  const timeSlots = schedule.timeSlots || [];
+  return {
+    ...schedule,
+    timeSlots: timeSlots
+  };
+}
+
+/**
  * スケジュールを更新
  * @param id スケジュールID
  * @param data スケジュールデータ
@@ -76,4 +94,25 @@ export async function updateSchedule(
     expiresAt,
   });
   return updatedSchedule?.id || null;
+}
+
+/**
+ * スケジュールとその回答全てを取得
+ * @param publicToken パブリックトークン
+ * @return スケジュールと回答
+ */
+export async function getScheduleWithAnswersByToken(publicToken: string): Promise<ScheduleWithAnswers | null> {
+  const schedule = await getScheduleByTokenClient(publicToken, true);
+  if (!schedule) {
+    return null;
+  }
+  const timeSlots = schedule.timeSlots || [];
+  return {
+    ...schedule,
+    timeSlots: timeSlots,
+    answers: schedule.answers?.map(answer => ({
+      ...answer,
+      slotResponses: answer.slotResponses || []
+    })) || []
+  };
 }

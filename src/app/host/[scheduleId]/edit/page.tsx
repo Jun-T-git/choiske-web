@@ -42,6 +42,7 @@ export default async function ScheduleEditPage({
       <ScheduleForm
         initialData={{
           initialTitle: schedule.title,
+          initialDescription: schedule.description || "",
           initialSelectedDays: selectedDays,
           initialSlotSize: slotSize,
           initialWithTime: withTime,

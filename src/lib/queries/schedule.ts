@@ -1,4 +1,5 @@
-import { Schedule, ScheduleSummary } from "@/types/schedule";
+import { Schedule, ScheduleSummary, ScheduleWithAnswers } from "@/types/schedule";
+import { TimeSlot } from "@prisma/client";
 
 /**
  * スケジュール作成APIを呼び出すクライアント関数
@@ -9,18 +10,19 @@ import { Schedule, ScheduleSummary } from "@/types/schedule";
  */
 export async function createSchedule(
   title: string,
+  description: string | undefined,
   slotSizeMinutes: number,
   slots: string[]
 ): Promise<string> {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/schedules`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({title, slotSizeMinutes, slots}),
+    body: JSON.stringify({title, description, slotSizeMinutes, slots}),
   });
   if (!res.ok) {
     throw new Error("Failed to create schedule");
   }
-  return await res.json();
+  return res.json();
 }
 
 /**
@@ -35,7 +37,7 @@ export async function fetchScheduleSummaryById(
   if (!res.ok) {
     throw new Error("Failed to fetch schedule summary");
   }
-  return await res.json();
+  return res.json();
 }
 
 /**
@@ -45,12 +47,27 @@ export async function fetchScheduleSummaryById(
  */
 export async function fetchScheduleById(
   scheduleId: string
-): Promise<Schedule & { timeSlots: { slotStart: string }[] }> {
+): Promise<Schedule & { timeSlots: TimeSlot[] }> {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/schedules/${scheduleId}`);
   if (!res.ok) {
     throw new Error("Failed to fetch schedule");
   }
-  return await res.json();
+  return res.json();
+}
+
+/**
+ * publicTokenからスケジュールを取得するAPIを呼び出すクライアント関数
+ * @param publicToken パブリックトークン
+ * @return スケジュールの詳細情報
+ */
+export async function fetchScheduleByToken(
+  publicToken: string
+): Promise<Schedule & { timeSlots: TimeSlot[] }> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/schedules/token/${publicToken}`);
+  if (!res.ok) {
+    throw new Error("Failed to fetch schedule by token");
+  }
+  return res.json();
 }
 
 /**
@@ -64,16 +81,32 @@ export async function fetchScheduleById(
 export async function updateSchedule(
   scheduleId: string,
   title: string,
+  description: string | undefined,
   slotSizeMinutes: number,
   slots: string[]
 ): Promise<string> {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/schedules/${scheduleId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ title, slotSizeMinutes, slots }),
+    body: JSON.stringify({ title, description, slotSizeMinutes, slots }),
   });
   if (!res.ok) {
     throw new Error("Failed to update schedule");
   }
-  return await res.json();
+  return res.json();
+}
+
+/**
+ * スケジュールとその回答全てを取得するAPIを呼び出すクライアント関数
+ * @param publicToken パブリックトークン
+ * @return スケジュールとその回答
+ */
+export async function fetchScheduleWithAnswersByToken(
+  publicToken: string
+): Promise<ScheduleWithAnswers | null> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/answers/token/${publicToken}`);
+  if (!res.ok) {
+    throw new Error("Failed to fetch schedule with answers by token");
+  }
+  return res.json();
 }

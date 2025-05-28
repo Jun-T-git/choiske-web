@@ -5,6 +5,7 @@ import { z } from "zod";
 // DB設計書に合わせたスキーマ
 const scheduleSchema = z.object({
   title: z.string().min(1, "タイトルは必須です").max(255),
+  description: z.string().max(100).optional(),
   slotSizeMinutes: z.number().int().positive(),
   slots: z.array(
     z.string().datetime({ offset: true, message: "ISO8601形式の日付時刻で指定してください" })

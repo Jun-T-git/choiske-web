@@ -1,7 +1,7 @@
 import { FC } from "react";
-import { SectionHeading } from "../atoms/SectionHeading";
-import { TextInput } from "../atoms/TextInput";
-import { TextareaInput } from "../atoms/TextareaInput";
+import { SectionHeading } from "../../atoms/SectionHeading";
+import { TextInput } from "../../atoms/TextInput";
+import { TextareaInput } from "../../atoms/TextareaInput";
 
 /**
  * タイトル入力＋説明セクション
