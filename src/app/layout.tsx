@@ -25,11 +25,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} bg-gradient-to-br from-white via-blue-50 to-blue-100 min-h-screen`}
+      >
         <CommonHeader />
-        <main className="max-w-2xl mx-auto p-4 rounded-2xl shadow-md pt-6 bg-gradient-to-br from-white via-blue-50 to-blue-100 min-h-screen">
-          {children}
-        </main>
+        <main>{children}</main>
       </body>
     </html>
   );
