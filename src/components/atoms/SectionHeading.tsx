@@ -29,7 +29,7 @@ export const SectionHeading: FC<SectionHeadingProps> = ({
       style={{ lineHeight: "2.5rem" }}
     >
       <span className="inline-block align-middle">{children}</span>
-      <span className="absolute left-0 right-0 bottom-0 h-1 bg-gradient-to-r from-blue-500 to-blue-200 rounded-full -z-1" />
+      <span className="absolute left-0 right-0 bottom-0 h-1 bg-gradient-to-r from-blue-500 to-blue-200 rounded-full" />
     </h3>
   </div>
 );

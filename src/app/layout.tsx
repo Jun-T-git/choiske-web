@@ -1,3 +1,4 @@
+import { CommonHeader } from "@/components/organisms/common/CommonHeader";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -23,9 +24,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ja">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
+        <CommonHeader />
+        <main className="max-w-2xl mx-auto p-4 rounded-2xl shadow-md pt-6 bg-gradient-to-br from-white via-blue-50 to-blue-100 min-h-screen">
+          {children}
+        </main>
       </body>
     </html>
   );

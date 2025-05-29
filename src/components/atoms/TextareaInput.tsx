@@ -1,4 +1,4 @@
-import { FC, TextareaHTMLAttributes } from "react";
+import { FC, TextareaHTMLAttributes, useEffect, useState } from "react";
 import { InputLabel } from "./InputLabel";
 
 export type TextareaInputProps = {
@@ -12,6 +12,9 @@ export type TextareaInputProps = {
   note?: string;
   rows?: number;
   maxLength?: number;
+  minLength?: number;
+  showLength?: boolean;
+  errorMessage?: string;
 } & Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "value" | "onChange">;
 
 /**
@@ -28,20 +31,54 @@ export const TextareaInput: FC<TextareaInputProps> = ({
   note,
   rows = 3,
   maxLength,
+  minLength,
+  showLength = false,
+  errorMessage,
   ...props
-}) => (
-  <div className={className}>
-    {label && <InputLabel label={label} required={required} />}
-    <textarea
-      className={`border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-sm ${textareaClassName}`}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder={placeholder}
-      required={required}
-      rows={rows}
-      maxLength={maxLength}
-      {...props}
-    />
-    {note && <div className="text-xs text-gray-400 mt-1">{note}</div>}
-  </div>
-);
+}) => {
+  const [error, setError] = useState<string>("");
+
+  useEffect(() => {
+    if (maxLength && value.length > maxLength) {
+      setError(errorMessage || `${maxLength}文字以内で入力してください`);
+    } else if (minLength && value.length < minLength) {
+      setError(errorMessage || `${minLength}文字以上入力してください`);
+    } else {
+      setError("");
+    }
+  }, [value, maxLength, minLength, errorMessage]);
+
+  return (
+    <div className={className}>
+      {label && <InputLabel label={label} required={required} />}
+      <textarea
+        className={`border border-gray-300 rounded-lg px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-sm ${textareaClassName} ${
+          error ? "border-red-400" : ""
+        }`}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        required={required}
+        rows={rows}
+        maxLength={maxLength}
+        {...props}
+      />
+      <div className="flex items-center justify-between mt-1">
+        {note && <div className="text-xs text-gray-400">{note}</div>}
+        {showLength && (
+          <div className="text-xs text-gray-400 ml-auto">
+            {value.length}
+            {maxLength ? `/${maxLength}` : ""}
+          </div>
+        )}
+      </div>
+      <div className="min-h-[20px]">
+        {error ? (
+          <div className="text-xs text-red-500 mt-1">{error}</div>
+        ) : (
+          <div className="text-xs text-transparent mt-1">placeholder</div>
+        )}
+      </div>
+    </div>
+  );
+};

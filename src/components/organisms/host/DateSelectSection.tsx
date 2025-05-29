@@ -37,6 +37,17 @@ export const DateSelectSection: FC<{
   error,
 }) => {
   const WEEK_LABELS = ["日", "月", "火", "水", "木", "金", "土"];
+
+  // 今月の日付リストを生成
+  const currentMonthDays: Date[] = [];
+  const year = month.getFullYear();
+  const m = month.getMonth();
+  for (let d = 1; d <= 31; d++) {
+    const date = new Date(year, m, d);
+    if (date.getMonth() !== m) break;
+    currentMonthDays.push(date);
+  }
+
   return (
     <section>
       <SectionHeading step={2}>候補日をカレンダーから選択</SectionHeading>
@@ -79,6 +90,7 @@ export const DateSelectSection: FC<{
         weekdayToggles={weekdayToggles}
         toggleWeekdayButton={toggleWeekdayButton}
         WEEK_LABELS={WEEK_LABELS}
+        currentMonthDays={currentMonthDays}
       />
       <SelectedDaysList
         selectedDays={selectedDays}

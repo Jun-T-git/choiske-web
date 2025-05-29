@@ -38,7 +38,7 @@ export default async function ScheduleEditPage({
   if (!schedule) return notFound();
 
   return (
-    <main className="max-w-2xl mx-auto p-4">
+    <>
       <ScheduleForm
         initialData={{
           initialTitle: schedule.title,
@@ -51,6 +51,6 @@ export default async function ScheduleEditPage({
         }}
         scheduleId={scheduleId}
       />
-    </main>
+    </>
   );
 }

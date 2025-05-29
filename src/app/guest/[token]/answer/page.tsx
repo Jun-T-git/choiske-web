@@ -25,7 +25,7 @@ const AnswerPage: FC<AnswerPageProps> = async ({ params }) => {
   });
 
   return (
-    <main className="max-w-3xl mx-auto p-4">
+    <div className="shadow-xl rounded-2xl px-4 sm:px-8 py-8 max-w-2xl mx-auto space-y-7 border border-gray-100 bg-white/90">
       <SectionHeading>スケジュール回答</SectionHeading>
       <div className="mb-6">
         <h2 className="text-xl font-bold mb-1">{title}</h2>
@@ -34,7 +34,7 @@ const AnswerPage: FC<AnswerPageProps> = async ({ params }) => {
         )}
       </div>
       <AnswerForm token={token} timeSlots={timeSlotsJst} />
-    </main>
+    </div>
   );
 };
 

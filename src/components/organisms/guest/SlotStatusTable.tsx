@@ -159,7 +159,7 @@ export const SlotStatusTable: FC<SlotStatusTableProps> = ({
                   }
                 >
                   <td
-                    className={`border border-gray-200 px-2 py-2 md:px-4 md:py-3 font-bold text-gray-700 sticky left-0 z-10 shadow-sm whitespace-nowrap bg-white`}
+                    className={`border border-gray-200 px-2 py-2 md:px-4 md:py-3 font-bold text-gray-700 sticky left-0 z-10 shadow-sm whitespace-nowrap bg-gray-50`}
                   >
                     <div className="flex flex-col items-center gap-1">
                       <span>{formatMonthDay(new Date(date))}</span>

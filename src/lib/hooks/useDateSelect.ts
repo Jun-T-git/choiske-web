@@ -35,10 +35,12 @@ export function useDateSelect(initialSelectedDays: Date[] = []) {
     const year = month.getFullYear();
     const m = month.getMonth();
     const days: Date[] = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
     for (let d = 1; d <= 31; d++) {
       const date = new Date(year, m, d);
       if (date.getMonth() !== m) break;
-      if (date.getDay() === idx) days.push(date);
+      if (date.getDay() === idx && date >= today) days.push(date);
     }
     if (!weekdayToggles[idx]) {
       // オンにした場合: 追加
@@ -70,10 +72,12 @@ export function useDateSelect(initialSelectedDays: Date[] = []) {
     const year = month.getFullYear();
     const m = month.getMonth();
     const days: Date[] = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
     for (let d = 1; d <= 31; d++) {
       const date = new Date(year, m, d);
       if (date.getMonth() !== m) break;
-      days.push(date);
+      if (date >= today) days.push(date);
     }
     if (!allDaysToggled) {
       // 追加

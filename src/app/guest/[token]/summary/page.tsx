@@ -3,6 +3,7 @@ import { GuestSummaryTable } from "@/components/organisms/guest/GuestSummaryTabl
 import { SlotStatus } from "@/constants/slotStatus";
 import { fetchScheduleWithAnswersByToken } from "@/lib/queries/schedule";
 import { toJstIsoString } from "@/lib/utils/dateUtils";
+import { FiUserPlus, FiUsers } from "react-icons/fi";
 
 interface Props {
   params: Promise<{ token: string }>;
@@ -57,9 +58,9 @@ export default async function GuestSummaryPage({ params }: Props) {
   });
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 flex flex-col items-center py-8 px-2 md:px-0">
-      <section className="w-full max-w-3xl mb-8 bg-white/90 rounded-2xl shadow-lg p-6 flex flex-col gap-2 border border-blue-100">
-        <h1 className="text-xl md:text-3xl font-bold text-blue-900 flex items-center gap-2">
+    <>
+      <section className="w-full max-w-2xl mb-4 bg-white/90 rounded-2xl shadow-md p-6 flex flex-col gap-2 border border-blue-100">
+        <h1 className="text-2xl font-bold text-blue-900 flex items-center gap-2">
           <span className="inline-block w-2 h-6 bg-blue-400 rounded-full mr-2" />
           {schedule.title}
         </h1>
@@ -71,25 +72,9 @@ export default async function GuestSummaryPage({ params }: Props) {
         <div className="mt-4 flex flex-col sm:flex-row gap-3 items-start sm:items-center">
           <LinkButton
             href={"/guest/" + token + "/answer"}
-            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow transition text-base"
+            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow transition text-base flex items-center gap-1"
           >
-            <span className="inline-block align-middle mr-1">
-              <svg
-                width="20"
-                height="20"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                className="inline-block align-middle"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-            </span>
+            <FiUserPlus className="inline-block w-4 h-4" />
             日程調整に回答する
           </LinkButton>
           <span className="text-xs text-gray-500 ml-1">
@@ -97,27 +82,13 @@ export default async function GuestSummaryPage({ params }: Props) {
           </span>
         </div>
       </section>
-      <section className="w-full max-w-3xl bg-white/95 rounded-2xl shadow p-4 md:p-6 border border-blue-50">
+      <section className="w-full max-w-2xl bg-white/95 rounded-2xl shadow-md p-4 md:p-6 border border-blue-50">
         <h2 className="text-lg md:text-xl font-bold mb-4 text-blue-800 flex items-center gap-2">
-          <svg
-            width="20"
-            height="20"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            className="inline-block align-middle text-blue-400"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 17v-2a4 4 0 018 0v2M5 10a4 4 0 018 0v2m-8 4v-2a4 4 0 018 0v2"
-            />
-          </svg>
+          <FiUsers className="inline-block align-middle text-blue-400 w-5 h-5" />
           みんなの回答
         </h2>
         <GuestSummaryTable slots={slots} answers={answers} />
       </section>
-    </main>
+    </>
   );
 }

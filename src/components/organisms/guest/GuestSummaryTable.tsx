@@ -208,12 +208,14 @@ export const GuestSummaryTable: FC<GuestSummaryTableProps> = ({
             <td className="" />
             {answers.map((a, i) => (
               <td key={a.id} className="py-1 text-center align-middle">
-                {a.comment && (
+                {a.comment ? (
                   <CommentPopover
                     comment={a.comment}
                     open={openCommentIdx === i}
                     onOpenChange={(v) => setOpenCommentIdx(v ? i : null)}
                   />
+                ) : (
+                  "-"
                 )}
               </td>
             ))}

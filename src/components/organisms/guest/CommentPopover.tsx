@@ -1,5 +1,6 @@
 "use client";
 import { FC, useEffect, useState } from "react";
+import { FiMessageCircle, FiX } from "react-icons/fi";
 
 interface CommentPopoverProps {
   comment: string;
@@ -36,20 +37,7 @@ export const CommentPopover: FC<CommentPopoverProps> = ({
         onClick={() => setOpen(!isOpen)}
         tabIndex={0}
       >
-        <svg
-          width="18"
-          height="18"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.77 9.77 0 01-4-.8L3 20l1.1-3.3A7.96 7.96 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-          />
-        </svg>
+        <FiMessageCircle size={18} />
       </button>
       {isOpen && (
         <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 z-30 animate-fadein">
@@ -63,20 +51,7 @@ export const CommentPopover: FC<CommentPopoverProps> = ({
                   aria-label="閉じる"
                   onClick={() => setOpen(false)}
                 >
-                  <svg
-                    width="18"
-                    height="18"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
+                  <FiX size={18} />
                 </button>
               </div>
             </div>

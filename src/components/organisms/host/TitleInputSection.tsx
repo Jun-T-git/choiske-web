@@ -23,6 +23,7 @@ export const TitleInputSection: FC<{
       placeholder="例: 5月の定例会議やランチ会"
       note="参加者に分かりやすいイベント名を入力してください"
       required={true}
+      maxLength={30}
     />
     <TextareaInput
       label="イベントの補足説明"

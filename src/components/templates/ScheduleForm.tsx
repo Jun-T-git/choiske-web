@@ -169,7 +169,8 @@ export const ScheduleForm: React.FC<ScheduleFormProps> = ({
       />
       <button
         type="submit"
-        className="bg-gradient-to-r from-blue-500 to-green-400 hover:from-blue-600 hover:to-green-500 text-white px-6 py-3 rounded-xl w-full font-bold text-md shadow-lg transition"
+        className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-base shadow transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2 disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed"
+        disabled={!!error || !title.trim() || selectedDays.length === 0}
       >
         {scheduleId ? "日程調整を保存" : "日程調整を作成"}
       </button>

@@ -14,7 +14,7 @@ export type Schedule = {
 
 export type ScheduleSummary = {
   title: string;
-  answerUrl: string; // アンケート回答URL
+  answerSummaryUrl: string; // アンケート回答URL
   hostUrl: string; // ホストURL（スケジュール作成者用）
 };
 

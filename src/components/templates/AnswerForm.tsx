@@ -105,7 +105,9 @@ export const AnswerForm: FC<AnswerFormProps> = ({ token, timeSlots }) => {
           value={name}
           onChange={setName}
           placeholder="例: 山田太郎"
+          maxLength={12}
           required
+          note="あなた（回答者）のお名前を入力してください"
         />
       </div>
       <div className="overflow-x-auto mb-4">
@@ -124,6 +126,7 @@ export const AnswerForm: FC<AnswerFormProps> = ({ token, timeSlots }) => {
           onChange={setComment}
           placeholder="例: △の日は来週までに確定します！"
           rows={3}
+          maxLength={100}
         />
       </div>
       <div className="mt-6 flex justify-center gap-4 w-full">

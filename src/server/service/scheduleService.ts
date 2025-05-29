@@ -36,7 +36,7 @@ export async function getScheduleSummaryById(scheduleId: string): Promise<Schedu
   if (!schedule) return null;
   return {
     title: schedule.title,
-    answerUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/guest/${schedule.publicToken}/answer`,
+    answerSummaryUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/guest/${schedule.publicToken}/summary`,
     hostUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/host/${schedule.publicToken}/done`,
   };
 }

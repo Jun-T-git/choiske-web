@@ -1,6 +1,7 @@
 import { CopyableText } from "@/components/atoms/CopyableText";
 import { LinkButton } from "@/components/atoms/LinkButton";
 import { fetchScheduleSummaryById } from "@/lib/queries/schedule";
+import { FiCheckCircle } from "react-icons/fi";
 
 /**
  * 完了画面
@@ -18,77 +19,52 @@ export default async function NewCompletePage({
   const { mode } = await searchParams;
 
   const scheduleSummary = await fetchScheduleSummaryById(scheduleId);
-  const { title, answerUrl, hostUrl } = scheduleSummary;
+  const { title, answerSummaryUrl, hostUrl } = scheduleSummary;
 
   return (
-    <main className="max-w-lg mx-auto p-6 bg-white/90 shadow-2xl rounded-2xl border border-gray-100 flex flex-col items-center animate-fade-in">
-      <div className="flex flex-col items-center w-full">
-        <svg
-          width="48"
-          height="48"
-          viewBox="0 0 48 48"
-          fill="none"
-          className="mb-4 text-green-500"
-        >
-          <circle cx="24" cy="24" r="24" fill="#22c55e" fillOpacity="0.15" />
-          <path
-            d="M16 24l6 6 10-10"
-            stroke="#22c55e"
-            strokeWidth="3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-        <h1 className="text-2xl sm:text-3xl font-extrabold mb-2 text-gray-900 tracking-tight text-center">
-          {mode === "edit"
-            ? "日程調整を更新しました"
-            : "日程調整を作成しました"}
-        </h1>
-        <p className="text-gray-600 text-center mb-6 text-base sm:text-lg">
-          下記のURLを参加者に共有してください
-        </p>
-      </div>
-      <div className="mb-6 w-full">
-        <div className="text-gray-500 mb-1 text-sm">タイトル</div>
-        <div className="text-lg font-semibold text-gray-800 bg-gray-50 rounded px-3 py-2 border border-gray-200 truncate">
+    <div className="max-w-md mx-auto p-6 bg-white rounded-2xl shadow border border-gray-100 flex flex-col items-center gap-6 animate-fade-in">
+      <FiCheckCircle className="text-green-500" size={48} />
+      <h1 className="text-xl font-bold text-gray-900 text-center">
+        {mode === "edit" ? "日程調整を更新しました" : "日程調整を作成しました"}
+      </h1>
+      <p className="text-gray-500 text-center text-sm">
+        下記のURLを参加者に共有してください
+      </p>
+      <div className="w-full">
+        <div className="text-xs text-gray-400 mb-1">タイトル</div>
+        <div className="text-base font-semibold text-gray-800 bg-gray-50 rounded px-3 py-2 border border-gray-100 truncate">
           {title}
         </div>
       </div>
-      <div className="w-full mb-6">
+      <div className="w-full">
         <CopyableText
-          value={answerUrl}
-          label="調整用URL"
+          value={answerSummaryUrl}
+          label="日程調整用URL"
           className="w-full"
           inputClassName="text-base"
           buttonClassName="text-base"
         />
       </div>
-      <div className="flex flex-col gap-3 w-full mt-2">
+      <div className="flex flex-col gap-2 w-full">
         <LinkButton
-          href={answerUrl}
-          className="w-full py-3 bg-gradient-to-r from-green-500 to-emerald-400 hover:from-green-600 hover:to-emerald-500 text-white rounded-xl text-lg font-bold shadow-md transition"
+          href={answerSummaryUrl}
+          className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-base font-bold shadow-sm transition"
         >
-          この日程調整ページへ
+          日程調整ページへ
         </LinkButton>
         <LinkButton
           href={`/host/${scheduleId}/edit`}
-          className="w-full py-3 bg-yellow-50 hover:bg-yellow-100 text-yellow-700 rounded-xl text-lg font-bold border border-yellow-100 transition"
+          className="w-full py-2 bg-yellow-50 hover:bg-yellow-100 text-yellow-700 rounded-lg text-base font-bold border border-yellow-100 transition"
         >
-          スケジュールを編集
+          イベントを編集する
         </LinkButton>
         <LinkButton
-          href="/"
-          className="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-xl text-lg font-bold border border-gray-200 transition"
+          href="/new"
+          className="w-full py-2 bg-gray-50 hover:bg-gray-100 text-blue-600 rounded-lg text-base font-bold border border-gray-100 transition"
         >
-          トップページへ
-        </LinkButton>
-        <LinkButton
-          href="/host/new"
-          className="w-full py-3 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl text-lg font-bold border border-blue-100 transition"
-        >
-          新しく作成する
+          別のイベントを作成する
         </LinkButton>
       </div>
-    </main>
+    </div>
   );
 }

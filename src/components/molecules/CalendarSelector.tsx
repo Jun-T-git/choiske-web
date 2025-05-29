@@ -37,8 +37,10 @@ export const CalendarSelector: FC<CalendarSelectorProps> = ({
     className="mx-auto"
     modifiersClassNames={{
       selected: "!bg-blue-500 !text-white",
-      today: "!text-green-500",
+      today: "!bg-blue-100 !text-blue-600 !font-bold !border !border-blue-300",
+      disabled: "!bg-gray-100 !text-gray-400 !cursor-not-allowed",
     }}
     locale={ja}
+    disabled={{ before: new Date(new Date().setHours(0, 0, 0, 0)) }}
   />
 );

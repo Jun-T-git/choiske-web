@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useState } from "react";
+import { FiCheck, FiCopy } from "react-icons/fi";
 
 /**
  * 汎用コピーボックス
@@ -51,51 +52,12 @@ export function CopyableText({
         >
           {copied ? (
             <>
-              <svg
-                width="24"
-                height="24"
-                fill="none"
-                viewBox="0 0 20 20"
-                className="inline-block align-middle"
-              >
-                <path
-                  d="M5 10l4 4 6-6"
-                  stroke="#fff"
-                  strokeWidth="2.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <FiCheck className="inline-block align-middle" size={20} />
               <span className="sr-only">コピー済み</span>
             </>
           ) : (
             <>
-              <svg
-                width="24"
-                height="24"
-                fill="none"
-                viewBox="0 0 20 20"
-                className="inline-block align-middle"
-              >
-                <rect
-                  x="7"
-                  y="7"
-                  width="9"
-                  height="9"
-                  rx="2"
-                  stroke="#fff"
-                  strokeWidth="1.8"
-                />
-                <rect
-                  x="4"
-                  y="4"
-                  width="9"
-                  height="9"
-                  rx="2"
-                  stroke="#fff"
-                  strokeWidth="1.8"
-                />
-              </svg>
+              <FiCopy className="inline-block align-middle" size={20} />
               <span className="sr-only">コピー</span>
             </>
           )}
