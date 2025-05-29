@@ -115,11 +115,13 @@ export const ScheduleForm: React.FC<ScheduleFormProps> = ({
       // 成功した場合は作成完了画面に遷移
       if (data) {
         const savedScheduleId = data;
-        scheduleId
-          ? router.push(`/host/${savedScheduleId}/done?mode=edit`)
-          : router.push(`/host/${savedScheduleId}/done`);
+        if (scheduleId) {
+          router.push(`/host/${savedScheduleId}/done?mode=edit`);
+        } else {
+          router.push(`/host/${savedScheduleId}/done`);
+        }
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error:", err);
       alert("日程調整の作成に失敗しました。");
     }

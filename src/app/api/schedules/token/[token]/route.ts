@@ -18,7 +18,7 @@ export async function GET(
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
     return NextResponse.json(schedule);
-  } catch (e) {
+  } catch {
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

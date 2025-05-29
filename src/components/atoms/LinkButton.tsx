@@ -9,11 +9,9 @@ export function LinkButton({
   children,
   className,
   ...props
-}: {
-  href: string;
+}: React.ComponentPropsWithoutRef<typeof Link> & {
   children: ReactNode;
   className?: string;
-  [key: string]: any;
 }) {
   return (
     <Link
@@ -27,3 +25,10 @@ export function LinkButton({
     </Link>
   );
 }
+
+export type LinkButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
+  React.AnchorHTMLAttributes<HTMLAnchorElement> & {
+    href?: string;
+    children: React.ReactNode;
+    className?: string;
+  };

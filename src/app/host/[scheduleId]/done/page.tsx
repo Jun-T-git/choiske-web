@@ -19,7 +19,7 @@ export default async function NewCompletePage({
   const { mode } = await searchParams;
 
   const scheduleSummary = await fetchScheduleSummaryById(scheduleId);
-  const { title, answerSummaryUrl, hostUrl } = scheduleSummary;
+  const { title, answerSummaryUrl } = scheduleSummary;
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-2xl shadow border border-gray-100 flex flex-col items-center gap-6 animate-fade-in">

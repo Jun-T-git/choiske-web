@@ -12,7 +12,6 @@ export function toJstIsoString(date: Date): string {
   const hours = String(date.getHours()).padStart(2, '0');
   const minutes = String(date.getMinutes()).padStart(2, '0');
   const seconds = String(date.getSeconds()).padStart(2, '0');
-  const ms = String(date.getMilliseconds()).padStart(3, '0');
 
   // JSTのオフセット（+09:00）
   const offset = '+09:00';

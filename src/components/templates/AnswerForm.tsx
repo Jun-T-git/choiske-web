@@ -92,8 +92,12 @@ export const AnswerForm: FC<AnswerFormProps> = ({ token, timeSlots }) => {
         slotResponses: statusList,
       });
       router.push(`/guest/${token}/summary`);
-    } catch (err: any) {
-      alert(err.message || "送信に失敗しました");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        alert(err.message || "送信に失敗しました");
+      } else {
+        alert("送信に失敗しました");
+      }
     }
   };
 
