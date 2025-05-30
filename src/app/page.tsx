@@ -129,7 +129,9 @@ export default function Home() {
           transition={{ delay: 1, duration: 1 }}
           className="absolute md:bottom-5 bottom-5 flex flex-col items-center"
         >
-          <span className="text-sm text-gray-500">詳細を見る</span>
+          <span className="text-sm text-gray-500 hidden md:block">
+            詳細を見る
+          </span>
           <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ repeat: Infinity, duration: 2 }}
