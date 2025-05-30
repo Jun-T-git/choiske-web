@@ -1,7 +1,8 @@
 "use client";
+import { LogoMark } from "@/components/atoms/LogoMark";
 import Link from "next/link";
 import { FC, useEffect, useState } from "react";
-import { FiCalendar, FiMenu, FiX } from "react-icons/fi";
+import { FiMenu, FiX } from "react-icons/fi";
 import { HeaderMenuPC } from "./HeaderMenuPC";
 import { HeaderMenuSP } from "./HeaderMenuSP";
 
@@ -45,12 +46,7 @@ export const CommonHeader: FC = () => {
         >
           <div className="flex items-center rounded-full px-3 py-1 transition-all duration-300">
             {/* ロゴマーク部分 */}
-            <div className="relative mr-2 group-hover:scale-105 transform-gpu transition-transform duration-300">
-              <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-blue-500 rounded-lg relative flex items-center justify-center shadow-sm">
-                <FiCalendar className="w-[18px] h-[18px] text-white" />
-              </div>
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-400 rounded-full border-2 border-white shadow-sm" />
-            </div>
+            <LogoMark className="mr-2 group-hover:scale-105 transform-gpu transition-transform duration-300" />
 
             {/* テキストロゴ部分 */}
             <div className="flex flex-col">

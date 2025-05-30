@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FC } from "react";
-import { FiGithub, FiHome, FiPlusCircle } from "react-icons/fi";
+import { FiHome, FiPlusCircle } from "react-icons/fi";
 
 export const HeaderMenuPC: FC<{ onLinkClick?: () => void }> = ({
   onLinkClick,
@@ -22,15 +22,5 @@ export const HeaderMenuPC: FC<{ onLinkClick?: () => void }> = ({
       <FiHome className="w-5 h-5" />
       <span>トップ</span>
     </Link>
-    <a
-      href="https://github.com/teraokajun/choiske-web"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="flex items-center gap-1 text-gray-400 hover:text-blue-400 transition-colors"
-      onClick={onLinkClick}
-    >
-      <FiGithub className="w-5 h-5" />
-      <span>GitHub</span>
-    </a>
   </nav>
 );

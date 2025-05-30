@@ -1,12 +1,6 @@
 import Link from "next/link";
 import { FC } from "react";
-import {
-  FiCalendar,
-  FiGithub,
-  FiHome,
-  FiPlusCircle,
-  FiX,
-} from "react-icons/fi";
+import { FiCalendar, FiHome, FiPlusCircle, FiX } from "react-icons/fi";
 
 export const HeaderMenuSP: FC<{ open: boolean; onClose: () => void }> = ({
   open,
@@ -61,16 +55,6 @@ export const HeaderMenuSP: FC<{ open: boolean; onClose: () => void }> = ({
         トップ
       </Link>
       <div className="border-t border-blue-50 mx-2" />
-      <a
-        href="https://github.com/teraokajun/choiske-web"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center gap-3 text-gray-400 hover:bg-blue-50 rounded-lg px-3 py-3 text-lg font-semibold transition-colors"
-        onClick={onClose}
-      >
-        <FiGithub className="w-5 h-5" />
-        GitHub
-      </a>
     </nav>
   </div>
 );
