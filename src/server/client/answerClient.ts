@@ -1,8 +1,6 @@
+import { prisma } from "@/server/client/prisma";
 import { Answer } from "@/types/answer";
 import { SlotResponse } from "@/types/slotResponse";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
 
 export type CreateAnswerInput = {
   scheduleId: string;

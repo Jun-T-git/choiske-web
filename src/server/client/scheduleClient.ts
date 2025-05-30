@@ -1,8 +1,6 @@
+import { prisma } from "@/server/client/prisma";
 import { Schedule, ScheduleWithAnswers } from "@/types/schedule";
 import { TimeSlot } from "@/types/timeSlot";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
 
 export type CreateScheduleInput = {
   title: string;
