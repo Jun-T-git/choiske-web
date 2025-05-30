@@ -49,6 +49,8 @@ export const ScheduleForm: React.FC<ScheduleFormProps> = ({
   // タイトル
   const [title, setTitle] = useState(initialTitle);
   const [description, setDescription] = useState(initialDescription);
+  // 時間調整のエラー状態
+  const [timeError, setTimeError] = useState<string | null>(null);
   // カレンダー・日付選択・曜日/月一括トグル等のロジックをカスタムフックで管理
   const {
     selectedDays,
@@ -168,11 +170,14 @@ export const ScheduleForm: React.FC<ScheduleFormProps> = ({
         slotSize={slotSize}
         setSlotSize={setSlotSize}
         mode={scheduleId ? "edit" : "create"}
+        onTimeError={setTimeError}
       />
       <button
         type="submit"
         className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-base shadow transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2 disabled:bg-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed"
-        disabled={!!error || !title.trim() || selectedDays.length === 0}
+        disabled={
+          !!error || !title.trim() || selectedDays.length === 0 || !!timeError
+        }
       >
         {scheduleId ? "日程調整を保存" : "日程調整を作成"}
       </button>

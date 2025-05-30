@@ -12,6 +12,7 @@ import { TimeAdjustPanel } from "../../molecules/TimeAdjustPanel";
  * @param setTimeTo 終了時刻更新関数
  * @param slotSize 区切り分数
  * @param setSlotSize 区切り分数更新関数
+ * @param onTimeError 時刻入力エラー時のコールバック
  */
 export const TimeAdjustSection: FC<{
   withTime: boolean;
@@ -23,6 +24,7 @@ export const TimeAdjustSection: FC<{
   slotSize: number;
   setSlotSize: (v: number) => void;
   mode?: "create" | "edit";
+  onTimeError?: (error: string | null) => void;
 }> = ({
   withTime,
   setWithTime,
@@ -33,6 +35,7 @@ export const TimeAdjustSection: FC<{
   slotSize,
   setSlotSize,
   mode = "create",
+  onTimeError,
 }) => (
   <section>
     <SectionHeading step={3}>時間を調整する（任意）</SectionHeading>
@@ -49,6 +52,7 @@ export const TimeAdjustSection: FC<{
       slotSize={slotSize}
       setSlotSize={setSlotSize}
       mode={mode} // 編集モードでは一部編集不可
+      onError={onTimeError}
     />
   </section>
 );

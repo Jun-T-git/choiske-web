@@ -37,7 +37,8 @@ export const CalendarSelector: FC<CalendarSelectorProps> = ({
     className="mx-auto"
     modifiersClassNames={{
       selected: "!bg-blue-500 !text-white",
-      today: "!bg-blue-100 !text-blue-600 !font-bold !border !border-blue-300",
+      today:
+        "!text-blue-600 !font-bold !border-2 !border-dashed !border-blue-300",
       disabled: "!bg-gray-100 !text-gray-400 !cursor-not-allowed",
     }}
     locale={ja}
