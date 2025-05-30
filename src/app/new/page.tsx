@@ -8,8 +8,8 @@ import { ReactNode } from "react";
  */
 export default function NewSchedulePage(): ReactNode {
   return (
-    <>
+    <main className="max-w-2xl mx-auto px-3 sm:px-8 pt-5 pb-10">
       <ScheduleForm />
-    </>
+    </main>
   );
 }

@@ -59,36 +59,38 @@ export default async function GuestSummaryPage({ params }: Props) {
 
   return (
     <>
-      <section className="w-full max-w-2xl mb-4 bg-white/90 rounded-2xl shadow-md p-6 flex flex-col gap-2 border border-blue-100">
-        <h1 className="text-2xl font-bold text-blue-900 flex items-center gap-2">
-          <span className="inline-block w-2 h-6 bg-blue-400 rounded-full mr-2" />
-          {schedule.title}
-        </h1>
-        {schedule.description && (
-          <p className="text-gray-700 text-sm md:text-lg mt-1 whitespace-pre-line leading-relaxed">
-            {schedule.description}
-          </p>
-        )}
-        <div className="mt-4 flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-          <LinkButton
-            href={"/guest/" + token + "/answer"}
-            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow transition text-base flex items-center gap-1"
-          >
-            <FiUserPlus className="inline-block w-4 h-4" />
-            日程調整に回答する
-          </LinkButton>
-          <span className="text-xs text-gray-500 ml-1">
-            ※ 回答は何度でも編集できます
-          </span>
-        </div>
-      </section>
-      <section className="w-full max-w-2xl bg-white/95 rounded-2xl shadow-md p-4 md:p-6 border border-blue-50">
-        <h2 className="text-lg md:text-xl font-bold mb-4 text-blue-800 flex items-center gap-2">
-          <FiUsers className="inline-block align-middle text-blue-400 w-5 h-5" />
-          みんなの回答
-        </h2>
-        <GuestSummaryTable slots={slots} answers={answers} />
-      </section>
+      <main className="max-w-2xl mx-auto px-1 sm:px-8 pt-5 pb-10">
+        <section className="w-full max-w-2xl mb-4 bg-white/90 rounded-2xl shadow-md p-6 flex flex-col gap-2 border border-blue-100">
+          <h1 className="text-2xl font-bold text-blue-900 flex items-center gap-2">
+            <span className="inline-block w-2 h-6 bg-blue-400 rounded-full mr-2" />
+            {schedule.title}
+          </h1>
+          {schedule.description && (
+            <p className="text-gray-700 text-sm md:text-lg mt-1 whitespace-pre-line leading-relaxed">
+              {schedule.description}
+            </p>
+          )}
+          <div className="mt-4 flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+            <LinkButton
+              href={"/guest/" + token + "/answer"}
+              className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow transition text-base flex items-center gap-1"
+            >
+              <FiUserPlus className="inline-block w-4 h-4" />
+              日程調整に回答する
+            </LinkButton>
+            <span className="text-xs text-gray-500 ml-1">
+              ※ 回答は何度でも編集できます
+            </span>
+          </div>
+        </section>
+        <section className="w-full max-w-2xl bg-white/95 rounded-2xl shadow-md p-4 md:p-6 border border-blue-50">
+          <h2 className="text-lg md:text-xl font-bold mb-4 text-blue-800 flex items-center gap-2">
+            <FiUsers className="inline-block align-middle text-blue-400 w-5 h-5" />
+            みんなの回答
+          </h2>
+          <GuestSummaryTable slots={slots} answers={answers} />
+        </section>
+      </main>
     </>
   );
 }

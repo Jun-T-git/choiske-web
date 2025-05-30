@@ -89,7 +89,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} bg-gradient-to-br from-white via-blue-50 to-blue-100 min-h-screen`}
       >
         <CommonHeader />
-        {children}
+        <main>{children}</main>
       </body>
     </html>
   );
