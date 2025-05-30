@@ -6,7 +6,7 @@ import { SLOT_STATUS_LIST, SlotStatus } from "@/constants/slotStatus";
 import { createAnswer } from "@/lib/queries/answer";
 import { TimeSlot } from "@/types/timeSlot";
 import { useRouter } from "next/navigation";
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useMemo, useState } from "react";
 
 interface AnswerFormProps {
   token: string; // トークンを受け取る
@@ -38,10 +38,6 @@ export const AnswerForm: FC<AnswerFormProps> = ({ token, timeSlots }) => {
   );
   const [name, setName] = useState("");
   const [comment, setComment] = useState("");
-
-  useEffect(() => {
-    console.log("statusList updated:", statusList);
-  }, [statusList]);
 
   // セルクリック
   const handleCellClick = (slotId: string) => {
