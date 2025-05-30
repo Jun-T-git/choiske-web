@@ -2,6 +2,7 @@
 
 import { LogoMark } from "@/components/atoms/LogoMark";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { useEffect } from "react";
 import { FiAlertTriangle, FiHome, FiRefreshCw } from "react-icons/fi";
 
@@ -52,13 +53,13 @@ export default function GlobalError({
 
               {/* ボタングループ */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a
+                <Link
                   href="/"
                   className="flex items-center justify-center gap-2 bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium rounded-lg px-5 py-3 transition-colors duration-200 w-full sm:w-auto"
                 >
                   <FiHome />
                   トップページに戻る
-                </a>
+                </Link>
                 <button
                   onClick={() => reset()}
                   className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg px-5 py-3 transition-colors duration-200 w-full sm:w-auto"
