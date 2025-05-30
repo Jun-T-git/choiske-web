@@ -37,7 +37,7 @@ export async function getScheduleSummaryById(scheduleId: string): Promise<Schedu
   return {
     title: schedule.title,
     answerSummaryUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/guest/${schedule.publicToken}/summary`,
-    hostUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/host/${schedule.publicToken}/done`,
+    hostUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/host/${schedule.id}/done`,
   };
 }
 

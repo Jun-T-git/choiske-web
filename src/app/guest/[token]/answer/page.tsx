@@ -25,7 +25,7 @@ const AnswerPage: FC<AnswerPageProps> = async ({ params }) => {
   });
 
   return (
-    <main className="max-w-2xl mx-auto px-1 sm:px-8 pt-5 pb-10">
+    <main className="max-w-4xl mx-auto px-1 sm:px-8 pt-5 pb-10">
       <div className="shadow-xl rounded-2xl px-3 sm:px-8 py-8 mx-auto space-y-7 border border-gray-100 bg-white/90">
         <SectionHeading>スケジュール回答</SectionHeading>
         <div className="mb-6">

@@ -72,7 +72,7 @@ export const TimeAdjustPanel: FC<TimeAdjustPanelProps> = ({
 
   return (
     <fieldset className="">
-      <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-2">
+      <div className="flex flex-col gap-2 sm:gap-4 mb-2">
         <span className="text-xs text-gray-400 ml-1 font-normal">
           ※この項目は後から変更できません
         </span>
@@ -119,7 +119,7 @@ export const TimeAdjustPanel: FC<TimeAdjustPanelProps> = ({
         }`}
       >
         {withTime && (
-          <div className="flex flex-col gap-2 sm:flex-row sm:gap-4 items-center">
+          <div className="flex flex-col gap-2 sm:gap-4 items-center">
             <label className="flex flex-col items-start gap-1 w-full">
               <span className="text-sm text-gray-700 font-semibold flex items-end gap-2">
                 調整可能な単位
@@ -128,7 +128,7 @@ export const TimeAdjustPanel: FC<TimeAdjustPanelProps> = ({
                 </span>
               </span>
               <select
-                className={`border border-gray-300 rounded-lg px-2 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-base ${
+                className={`border border-gray-300 rounded-lg px-2 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition text-base hover:border-blue-300 ${
                   mode === "create"
                     ? ""
                     : "bg-gray-100 text-gray-400 cursor-not-allowed opacity-70"
@@ -145,7 +145,7 @@ export const TimeAdjustPanel: FC<TimeAdjustPanelProps> = ({
             <label className="flex flex-col items-start gap-1 w-full">
               <span className="text-sm text-gray-700 font-semibold">開始</span>
               <select
-                className={`border border-gray-300 rounded-lg px-2 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-base ${
+                className={`border border-gray-300 rounded-lg px-2 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition text-base hover:border-blue-300 ${
                   mode === "create"
                     ? ""
                     : "bg-gray-100 text-gray-400 cursor-not-allowed opacity-70"
@@ -170,12 +170,11 @@ export const TimeAdjustPanel: FC<TimeAdjustPanelProps> = ({
                 })}
               </select>
             </label>
-            <span className="text-gray-500 hidden sm:inline-block">〜</span>
             {/* 終了時刻セレクト */}
             <label className="flex flex-col items-start gap-1 w-full">
               <span className="text-sm text-gray-700 font-semibold">終了</span>
               <select
-                className={`border border-gray-300 rounded-lg px-2 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-base ${
+                className={`border border-gray-300 rounded-lg px-2 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition text-base hover:border-blue-300 ${
                   mode === "create"
                     ? ""
                     : "bg-gray-100 text-gray-400 cursor-not-allowed opacity-70"

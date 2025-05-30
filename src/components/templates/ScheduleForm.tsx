@@ -130,8 +130,7 @@ export const ScheduleForm: React.FC<ScheduleFormProps> = ({
     } catch (err: unknown) {
       console.error("Error:", err);
       alert("日程調整の作成に失敗しました。");
-    } finally {
-      // エラーが発生しても送信中状態を解除
+      // 送信中状態を解除
       setIsSubmitting(false);
     }
   };

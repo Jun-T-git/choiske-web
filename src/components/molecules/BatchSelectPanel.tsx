@@ -35,7 +35,7 @@ export const BatchSelectPanel: FC<BatchSelectPanelProps> = ({
       <div className="my-2 text-center bg-gray-200 p-1 rounded-lg w-full">
         <button
           type="button"
-          className="inline-flex items-center justify-center gap-1 text-xs text-gray-600 font-bold underline hover:text-blue-800 transition"
+          className="w-full flex items-center justify-center gap-1 text-xs py-1.5 text-gray-600 font-bold underline hover:text-blue-800 transition"
           onClick={onToggle}
           aria-expanded={show}
         >

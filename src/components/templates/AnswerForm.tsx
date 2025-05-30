@@ -98,8 +98,7 @@ export const AnswerForm: FC<AnswerFormProps> = ({ token, timeSlots }) => {
       } else {
         alert("送信に失敗しました");
       }
-    } finally {
-      // エラーが発生しても送信中状態を解除
+      // 送信中状態を解除
       setIsSubmitting(false);
     }
   };

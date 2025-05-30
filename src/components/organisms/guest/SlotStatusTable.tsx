@@ -221,9 +221,6 @@ export const SlotStatusTable: FC<SlotStatusTableProps> = ({
                         <span className="inline-block align-middle drop-shadow-sm">
                           {ui.label}
                         </span>
-                        <span className="hidden group-hover:inline absolute left-1/2 top-full mt-2 -translate-x-1/2 text-xs bg-white border border-blue-100 rounded px-2 py-1 shadow z-20 whitespace-nowrap">
-                          {ui.desc}（タップで切替）
-                        </span>
                         {/* アニメーションエフェクト */}
                         <span className="absolute inset-0 pointer-events-none group-active:animate-ping group-active:bg-blue-100/30" />
                       </td>
