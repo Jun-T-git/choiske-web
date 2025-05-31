@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 /**
  * 回答新規作成API
  * @param req 
- * @returns 作成した回答のID
+ * @returns 作成した回答のID及び編集用トークン
  */
 export async function POST(req: NextRequest) {
   try {
@@ -24,8 +24,9 @@ export async function POST(req: NextRequest) {
     if (!answer) {
       return NextResponse.json({ error: "Failed to create answer" }, { status: 500 });
     }
-    return NextResponse.json({ id: answer.id });
-  } catch {
+    return NextResponse.json({ id: answer.id, editToken: answer.editToken });
+  } catch (error) {
+    console.error("Error creating answer:", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

@@ -1,27 +1,33 @@
 "use client";
-import { CopyableText } from "@/components/atoms/CopyableText";
 import { TextInput } from "@/components/atoms/TextInput";
 import { TextareaInput } from "@/components/atoms/TextareaInput";
 import { SlotStatusTable } from "@/components/organisms/guest/SlotStatusTable";
 import { SLOT_STATUS_LIST, SlotStatus } from "@/constants/slotStatus";
-import { createAnswer } from "@/lib/queries/answer";
+import { editAnswerByToken } from "@/lib/queries/answer";
 import { TimeSlot } from "@/types/timeSlot";
 import { useRouter } from "next/navigation";
 import { FC, useMemo, useState } from "react";
 
-interface AnswerFormProps {
-  token: string; // トークンを受け取る
+interface AnswerEditFormProps {
+  token: string; // スケジュールトークン
+  editToken: string; // 編集用トークン
   timeSlots: TimeSlot[];
+  initialName: string;
+  initialComment: string | null;
+  initialResponses: { slotId: string; status: SlotStatus }[];
 }
 
-export const AnswerForm: FC<AnswerFormProps> = ({ token, timeSlots }) => {
+export const AnswerEditForm: FC<AnswerEditFormProps> = ({
+  token,
+  editToken,
+  timeSlots,
+  initialName,
+  initialComment,
+  initialResponses,
+}) => {
   const router = useRouter();
   // 送信中の状態管理
   const [isSubmitting, setIsSubmitting] = useState(false);
-  // 送信完了状態
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  // 編集用トークン
-  const [editToken, setEditToken] = useState("");
 
   // timeSlots: [{ id, slotStart, ... }]
   const slotMetaList = useMemo(
@@ -38,13 +44,11 @@ export const AnswerForm: FC<AnswerFormProps> = ({ token, timeSlots }) => {
   );
 
   // statusList: [{ slotId, status }]
-  const [statusList, setStatusList] = useState<
-    { slotId: string; status: SlotStatus }[]
-  >(() =>
-    slotMetaList.map((s) => ({ slotId: s.slotId, status: SlotStatus.OK }))
-  );
-  const [name, setName] = useState("");
-  const [comment, setComment] = useState("");
+  const [statusList, setStatusList] =
+    useState<{ slotId: string; status: SlotStatus }[]>(initialResponses);
+
+  const [name, setName] = useState(initialName);
+  const [comment, setComment] = useState(initialComment || "");
 
   // セルクリック
   const handleCellClick = (slotId: string) => {
@@ -90,63 +94,23 @@ export const AnswerForm: FC<AnswerFormProps> = ({ token, timeSlots }) => {
     // 送信中状態に設定
     setIsSubmitting(true);
     try {
-      const response = await createAnswer({
-        scheduleId: timeSlots[0]?.scheduleId ?? "",
+      await editAnswerByToken(editToken, {
         name,
         comment,
         slotResponses: statusList,
       });
 
-      // 編集用トークンを保存
-      setEditToken(response.editToken);
-      setIsSubmitted(true);
-      // 送信完了後も送信中状態を解除
-      setIsSubmitting(false);
+      router.push(`/guest/${token}/summary`);
     } catch (err: unknown) {
       if (err instanceof Error) {
-        alert(err.message || "送信に失敗しました");
+        alert(err.message || "更新に失敗しました");
       } else {
-        alert("送信に失敗しました");
+        alert("更新に失敗しました");
       }
       // 送信中状態を解除
       setIsSubmitting(false);
     }
   };
-
-  // 編集用URLの生成
-  const editUrl = `${window.location.origin}/guest/${token}/answer/edit/${editToken}`;
-
-  // 回答送信後の画面
-  if (isSubmitted) {
-    return (
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">
-          回答が完了しました！
-        </h2>
-        <div className="mb-6">
-          <p className="text-gray-700 mb-2">
-            以下のURLから回答を編集することができます。必要な場合はこのURLを保存してください。
-          </p>
-          <div className="mt-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <CopyableText
-              value={editUrl}
-              label="編集用URL"
-              className="break-all text-blue-600 hover:text-blue-800 font-medium"
-            />
-          </div>
-        </div>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button
-            type="button"
-            className="px-6 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold shadow-md hover:from-blue-600 hover:to-blue-700 hover:shadow-lg transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-300"
-            onClick={() => router.push(`/guest/${token}/summary`)}
-          >
-            一覧画面へ進む
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <form onSubmit={handleSubmit}>
@@ -216,10 +180,10 @@ export const AnswerForm: FC<AnswerFormProps> = ({ token, timeSlots }) => {
                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                 ></path>
               </svg>
-              送信中...
+              更新中...
             </span>
           ) : (
-            "送信"
+            "更新"
           )}
         </button>
       </div>

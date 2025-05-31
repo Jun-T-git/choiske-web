@@ -26,6 +26,7 @@ CREATE TABLE "Answer" (
     "schedule_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "comment" TEXT,
+    "edit_token" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -44,6 +45,9 @@ CREATE TABLE "SlotResponse" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Schedule_public_token_key" ON "Schedule"("public_token");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Answer_edit_token_key" ON "Answer"("edit_token");
 
 -- AddForeignKey
 ALTER TABLE "TimeSlot" ADD CONSTRAINT "TimeSlot_schedule_id_fkey" FOREIGN KEY ("schedule_id") REFERENCES "Schedule"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
