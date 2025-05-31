@@ -21,9 +21,9 @@ export const ScheduleSharePanel: FC<ScheduleSharePanelProps> = ({
   const [isOpen, setIsOpen] = useState(false);
 
   // 回答用URL
-  const answerUrl = `${window.location.origin}/guest/${token}/answer`;
+  const answerUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/guest/${token}/answer`;
   // サマリー（一覧表示）用URL
-  const summaryUrl = `${window.location.origin}/guest/${token}/summary`;
+  const summaryUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/guest/${token}/summary`;
 
   return (
     <div

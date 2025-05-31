@@ -1,24 +1,26 @@
 import { validateTimeFormat, validateTimeRange } from "@/lib/utils/validationUtils";
 import { useEffect, useState } from "react";
+import { useDateSelect } from "./useDateSelect";
 
 /**
- * 時間調整に関する状態とロジックを管理するカスタムフック
- * UIや動作はScheduleForm.tsxと同一
- * @returns 時間調整用の状態・セッター
+ * 日程選択と時間調整を一体的に管理するカスタムフック
+ * これにより、日付選択と時間選択の機能を一つのフックで扱えます
  */
-export function useTimeAdjust(options?: {
+export function useScheduleSelect(options?: {
+  initialSelectedDays?: Date[];
   initialWithTime?: boolean;
   initialTimeFrom?: string;
   initialTimeTo?: string;
   initialSlotSize?: number;
 }) {
-  // 「時間も調整する」かどうかの状態
+  // 日付選択部分のロジックを統合
+  const dateSelect = useDateSelect(options?.initialSelectedDays || []);
+
+  // 時間調整部分のロジック
   const [withTime, setWithTime] = useState(options?.initialWithTime ?? false);
-  // 時間調整用の状態
   const [timeFrom, setTimeFrom] = useState(options?.initialTimeFrom ?? "09:00");
   const [timeTo, setTimeTo] = useState(options?.initialTimeTo ?? "18:00");
-  const [slotSize, setSlotSize] = useState(options?.initialSlotSize ?? 60); // デフォルト1時間ごと（終日選択時は1日）
-  // バリデーションエラー
+  const [slotSize, setSlotSize] = useState(options?.initialSlotSize ?? 60);
   const [timeError, setTimeError] = useState<string | null>(null);
 
   // 時間のバリデーション
@@ -53,29 +55,48 @@ export function useTimeAdjust(options?: {
 
   /**
    * 時間スロットを生成する関数
-   * - 開始時刻(timeFrom)と終了時刻(timeTo)を分割し、slotSize(分)ごとにスロットを生成
-   * - withTimeがfalseの場合は00:00の1スロットのみを返す
-   * @returns 時間スロットの配列
-   * @example timeFrom="09:00", timeTo="18:00", slotSize=60の場合
-   * const slots = generateTimeSlots();
-   * console.log(slots); // ["09:00", "10:00", ..., "17:00"]
    */
   const generateTimeSlots = () => {
-    if (!withTime) return ["00:00"]; // withTimeがfalseの場合は00:00の1スロットのみ
+    if (!withTime) return ["00:00"];
+    
     const [startHour, startMinute] = timeFrom.split(":").map(Number);
     const [endHour, endMinute] = timeTo.split(":").map(Number);
-    const startTime = startHour * 60 + startMinute; // 開始時刻を分に変換
-    const endTime = endHour * 60 + endMinute; // 終了時刻を分に変換
+    const startTime = startHour * 60 + startMinute;
+    const endTime = endHour * 60 + endMinute;
     const slots = [];
+    
     for (let time = startTime; time < endTime; time += slotSize) {
       const hour = Math.floor(time / 60).toString().padStart(2, "0");
       const minute = (time % 60).toString().padStart(2, "0");
       slots.push(`${hour}:${minute}`);
     }
+    
     return slots;
   };
 
+  /**
+   * 日付と時間からスロットを生成
+   */
+  const generateFullTimeSlots = () => {
+    const timeSlots = generateTimeSlots();
+    const fullSlots: string[] = [];
+    
+    dateSelect.selectedDays.forEach(day => {
+      const dateStr = day.toISOString().split('T')[0]; // YYYY-MM-DD
+      
+      timeSlots.forEach(timeStr => {
+        fullSlots.push(`${dateStr}T${timeStr}:00`);
+      });
+    });
+    
+    return fullSlots;
+  };
+
   return {
+    // 日付選択関連
+    ...dateSelect,
+    
+    // 時間調整関連
     withTime,
     setWithTime,
     timeFrom,
@@ -84,7 +105,13 @@ export function useTimeAdjust(options?: {
     setTimeTo,
     slotSize,
     setSlotSize,
-    generateTimeSlots,
     timeError,
+    
+    // 統合機能
+    generateTimeSlots,
+    generateFullTimeSlots,
+    
+    // フォームの有効性
+    isValid: dateSelect.selectedDays.length > 0 && !timeError,
   };
 }

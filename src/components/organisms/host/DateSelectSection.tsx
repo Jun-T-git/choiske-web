@@ -1,7 +1,7 @@
 import { FC } from "react";
-import { SectionHeading } from "../../atoms/SectionHeading";
 import { BatchSelectPanel } from "../../molecules/BatchSelectPanel";
 import { CalendarSelector } from "../../molecules/CalendarSelector";
+import { FormSection } from "../../molecules/FormSection";
 import { SelectedDaysList } from "../../molecules/SelectedDaysList";
 
 /**
@@ -48,12 +48,17 @@ export const DateSelectSection: FC<{
     currentMonthDays.push(date);
   }
 
+  // 選択日の削除ハンドラ
+  const handleRemoveSelectedDay = (date: Date) => {
+    setSelectedDays(selectedDays.filter((d) => d.getTime() !== date.getTime()));
+  };
+
   return (
-    <section>
-      <SectionHeading step={2}>候補日をカレンダーから選択</SectionHeading>
-      <p className="text-xs text-gray-500 mb-3">
-        カレンダーをタップして候補日を選択できます。もう一度タップで解除できます。
-      </p>
+    <FormSection
+      title="候補日をカレンダーから選択"
+      step={2}
+      description="カレンダーをタップして候補日を選択できます。もう一度タップで解除できます。"
+    >
       <div className="border border-gray-100 rounded-lg p-2 pt-0 bg-white shadow-sm max-w-sm mx-auto">
         <div className="flex items-center justify-between mb-2 mt-2">
           <button
@@ -74,49 +79,48 @@ export const DateSelectSection: FC<{
             次の月 ＞
           </button>
         </div>
+
         <CalendarSelector
           selectedDays={selectedDays}
-          onSelect={(selected) => setSelectedDays(selected || [])}
+          onSelect={(selected) => selected && setSelectedDays(selected)}
           month={month}
           setMonth={setMonth}
         />
       </div>
 
-      <BatchSelectPanel
-        show={showBatchSelect}
-        onToggle={() => setShowBatchSelect(!showBatchSelect)}
-        allDaysToggled={allDaysToggled}
-        toggleAllDaysInMonth={toggleAllDaysInMonth}
-        weekdayToggles={weekdayToggles}
-        toggleWeekdayButton={toggleWeekdayButton}
-        WEEK_LABELS={WEEK_LABELS}
-        currentMonthDays={currentMonthDays}
-      />
+      <div className="text-center mt-3">
+        <button
+          type="button"
+          className={`text-xs font-semibold inline-flex items-center ${
+            showBatchSelect
+              ? "text-blue-600 underline"
+              : "text-gray-500 hover:text-blue-600"
+          }`}
+          onClick={() => setShowBatchSelect(!showBatchSelect)}
+        >
+          {showBatchSelect ? "閉じる ↑" : "まとめて選択 ↓"}
+        </button>
+      </div>
+
+      {showBatchSelect && (
+        <BatchSelectPanel
+          show={showBatchSelect}
+          onToggle={() => setShowBatchSelect(!showBatchSelect)}
+          weekdayToggles={weekdayToggles}
+          toggleWeekdayButton={toggleWeekdayButton}
+          allDaysToggled={allDaysToggled}
+          toggleAllDaysInMonth={toggleAllDaysInMonth}
+          WEEK_LABELS={WEEK_LABELS}
+          currentMonthDays={currentMonthDays}
+        />
+      )}
+
       <SelectedDaysList
         selectedDays={selectedDays}
-        onRemove={(date) =>
-          setSelectedDays(
-            selectedDays.filter((x) => x.getTime() !== date.getTime())
-          )
-        }
+        onRemove={handleRemoveSelectedDay}
       />
-      <div className="text-xs text-blue-600 mt-2 font-semibold">
-        {selectedDays.length}日選択中
-        {selectedDays.length > 0 && (
-          <button
-            type="button"
-            className="ml-4 px-2 py-1 rounded bg-red-100 text-red-600 border border-red-200 text-xs font-bold hover:bg-red-200 transition"
-            onClick={() => setSelectedDays([])}
-          >
-            候補日を全て削除する
-          </button>
-        )}
-      </div>
-      {error && (
-        <div className="text-red-500 text-base mt-2 font-bold drop-shadow">
-          {error}
-        </div>
-      )}
-    </section>
+
+      {error && <div className="text-red-500 text-sm mt-1">{error}</div>}
+    </FormSection>
   );
 };

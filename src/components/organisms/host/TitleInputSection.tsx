@@ -1,7 +1,7 @@
 import { FC } from "react";
-import { SectionHeading } from "../../atoms/SectionHeading";
 import { TextInput } from "../../atoms/TextInput";
 import { TextareaInput } from "../../atoms/TextareaInput";
+import { FormSection } from "../../molecules/FormSection";
 
 /**
  * タイトル入力＋説明セクション
@@ -14,8 +14,7 @@ export const TitleInputSection: FC<{
   description: string;
   setDescription: (v: string) => void;
 }> = ({ title, setTitle, description, setDescription }) => (
-  <section>
-    <SectionHeading step={1}>イベント情報を入力</SectionHeading>
+  <FormSection title="イベント情報を入力" step={1}>
     <TextInput
       label="イベント名"
       value={title}
@@ -35,5 +34,5 @@ export const TitleInputSection: FC<{
       className="mt-4"
       textareaClassName="h-24"
     />
-  </section>
+  </FormSection>
 );

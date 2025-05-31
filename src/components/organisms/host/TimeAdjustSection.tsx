@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { SectionHeading } from "../../atoms/SectionHeading";
+import { FormSection } from "../../molecules/FormSection";
 import { TimeAdjustPanel } from "../../molecules/TimeAdjustPanel";
 
 /**
@@ -37,11 +37,11 @@ export const TimeAdjustSection: FC<{
   mode = "create",
   onTimeError,
 }) => (
-  <section>
-    <SectionHeading step={3}>時間を調整する（任意）</SectionHeading>
-    <p className="text-xs text-gray-500 mb-3">
-      必要な場合のみ「時間も調整する」を選択してください
-    </p>
+  <FormSection
+    title="時間を調整する（任意）"
+    step={3}
+    description="必要な場合のみ「時間も調整する」を選択してください"
+  >
     <TimeAdjustPanel
       withTime={withTime}
       setWithTime={setWithTime}
@@ -54,5 +54,5 @@ export const TimeAdjustSection: FC<{
       mode={mode} // 編集モードでは一部編集不可
       onError={onTimeError}
     />
-  </section>
+  </FormSection>
 );
