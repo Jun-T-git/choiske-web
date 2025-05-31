@@ -1,4 +1,5 @@
 import { SectionHeading } from "@/components/atoms/SectionHeading";
+import { ScheduleSharePanel } from "@/components/molecules/ScheduleSharePanel";
 import { AnswerForm } from "@/components/templates/AnswerForm";
 import { fetchScheduleByToken } from "@/lib/queries/schedule";
 import { toJstIsoString } from "@/lib/utils/dateUtils";
@@ -33,6 +34,7 @@ const AnswerPage: FC<AnswerPageProps> = async ({ params }) => {
           {description && (
             <p className="text-gray-600 mb-2 text-sm">{description}</p>
           )}
+          <ScheduleSharePanel title={title} token={token} className="mt-6" />
         </div>
         <AnswerForm token={token} timeSlots={timeSlotsJst} />
       </div>

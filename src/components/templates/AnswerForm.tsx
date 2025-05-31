@@ -2,6 +2,7 @@
 import { CopyableText } from "@/components/atoms/CopyableText";
 import { TextInput } from "@/components/atoms/TextInput";
 import { TextareaInput } from "@/components/atoms/TextareaInput";
+import { ShareButtons } from "@/components/molecules/ShareButtons";
 import { SlotStatusTable } from "@/components/organisms/guest/SlotStatusTable";
 import { SLOT_STATUS_LIST, SlotStatus } from "@/constants/slotStatus";
 import { createAnswer } from "@/lib/queries/answer";
@@ -132,6 +133,15 @@ export const AnswerForm: FC<AnswerFormProps> = ({ token, timeSlots }) => {
               value={editUrl}
               label="編集用URL"
               className="break-all text-blue-600 hover:text-blue-800 font-medium"
+            />
+          </div>
+
+          <div className="mt-4 pt-4 border-t border-gray-200">
+            <ShareButtons
+              url={editUrl}
+              title="日程調整回答の編集用URL"
+              message="こちらのURLから回答内容を編集できます"
+              className="mt-2"
             />
           </div>
         </div>

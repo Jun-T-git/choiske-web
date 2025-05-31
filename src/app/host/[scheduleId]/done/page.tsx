@@ -1,5 +1,6 @@
 import { CopyableText } from "@/components/atoms/CopyableText";
 import { LinkButton } from "@/components/atoms/LinkButton";
+import { ShareButtons } from "@/components/molecules/ShareButtons";
 import { fetchScheduleSummaryById } from "@/lib/queries/schedule";
 import {
   FiArrowRight,
@@ -74,6 +75,15 @@ export default async function NewCompletePage({
               <FiShare2 size={18} />
             </div>
           </div>
+
+          <div className="mt-4 pt-2 border-t border-blue-100">
+            <ShareButtons
+              url={answerSummaryUrl}
+              title={`${title} - 日程調整`}
+              message={`「${title}」の日程調整に回答をお願いします。`}
+              className="mt-1"
+            />
+          </div>
         </div>
 
         <div className="bg-yellow-50 border border-yellow-100 rounded-lg p-4 w-full relative overflow-hidden">
@@ -101,6 +111,15 @@ export default async function NewCompletePage({
             <div className="absolute right-14 top-1/2 transform -translate-y-2/3 text-yellow-400">
               <FiSave size={18} />
             </div>
+          </div>
+
+          <div className="mt-4 pt-2 border-t border-yellow-100">
+            <ShareButtons
+              url={hostUrl}
+              title={`${title} - 日程調整(管理用)`}
+              message={`「${title}」の日程調整を管理するためのURLです。`}
+              className="mt-1"
+            />
           </div>
         </div>
         <div className="w-full border-t border-gray-100 pt-6 mt-2">

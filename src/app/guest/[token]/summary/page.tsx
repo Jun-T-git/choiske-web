@@ -1,4 +1,5 @@
 import { LinkButton } from "@/components/atoms/LinkButton";
+import { ScheduleSharePanel } from "@/components/molecules/ScheduleSharePanel";
 import { GuestSummaryTable } from "@/components/organisms/guest/GuestSummaryTable";
 import { SlotStatus } from "@/constants/slotStatus";
 import { fetchScheduleWithAnswersByToken } from "@/lib/queries/schedule";
@@ -82,6 +83,12 @@ export default async function GuestSummaryPage({ params }: Props) {
               ※ 回答は何度でも編集できます
             </span> */}
           </div>
+
+          <ScheduleSharePanel
+            title={schedule.title}
+            token={token}
+            className="mt-4"
+          />
         </section>
         <section className="w-full bg-white/95 rounded-2xl shadow-md p-4 md:p-6 border border-blue-50">
           <h2 className="text-lg md:text-xl font-bold mb-4 text-blue-800 flex items-center gap-2">

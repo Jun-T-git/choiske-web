@@ -1,6 +1,7 @@
 "use client";
 import { TextInput } from "@/components/atoms/TextInput";
 import { TextareaInput } from "@/components/atoms/TextareaInput";
+import { ShareButtons } from "@/components/molecules/ShareButtons";
 import { SlotStatusTable } from "@/components/organisms/guest/SlotStatusTable";
 import { SLOT_STATUS_LIST, SlotStatus } from "@/constants/slotStatus";
 import { editAnswerByToken } from "@/lib/queries/answer";
@@ -28,6 +29,8 @@ export const AnswerEditForm: FC<AnswerEditFormProps> = ({
   const router = useRouter();
   // 送信中の状態管理
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // 更新完了状態
+  const [isUpdated, setIsUpdated] = useState(false);
 
   // timeSlots: [{ id, slotStart, ... }]
   const slotMetaList = useMemo(
@@ -100,7 +103,9 @@ export const AnswerEditForm: FC<AnswerEditFormProps> = ({
         slotResponses: statusList,
       });
 
-      router.push(`/guest/${token}/summary`);
+      // 更新完了状態に設定
+      setIsUpdated(true);
+      setIsSubmitting(false);
     } catch (err: unknown) {
       if (err instanceof Error) {
         alert(err.message || "更新に失敗しました");
@@ -111,6 +116,42 @@ export const AnswerEditForm: FC<AnswerEditFormProps> = ({
       setIsSubmitting(false);
     }
   };
+
+  // 編集用URLの生成
+  const editUrl = `${window.location.origin}/guest/${token}/answer/edit/${editToken}`;
+
+  // 更新完了後の画面
+  if (isUpdated) {
+    return (
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">
+          回答を更新しました！
+        </h2>
+        <div className="mb-6">
+          <p className="text-gray-700 mb-2">
+            回答内容が更新されました。引き続き以下のURLで回答を編集することができます。
+          </p>
+          <div className="mt-4 pt-4 border-t border-gray-200">
+            <ShareButtons
+              url={editUrl}
+              title="日程調整回答の編集用URL"
+              message="こちらのURLから回答内容を編集できます"
+              className="mt-2"
+            />
+          </div>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <button
+            type="button"
+            className="px-6 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold shadow-md hover:from-blue-600 hover:to-blue-700 hover:shadow-lg transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-300"
+            onClick={() => router.push(`/guest/${token}/summary`)}
+          >
+            一覧画面へ進む
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit}>
