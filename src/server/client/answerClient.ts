@@ -65,7 +65,7 @@ export async function editAnswerByToken(input: EditAnswerInput): Promise<Answer 
   if (!existingAnswer) return null;
 
   // 既存の回答を更新
-  const updatedAnswer = await prisma.answer.update({
+  await prisma.answer.update({
     where: { id: existingAnswer.id },
     data: {
       name: input.name !== undefined ? input.name : existingAnswer.name,
@@ -81,7 +81,7 @@ export async function editAnswerByToken(input: EditAnswerInput): Promise<Answer 
   });
 
   // 2. 新しいslotResponsesを作成
-  const newSlotResponses = await Promise.all(
+  await Promise.all(
     input.slotResponses.map((sr) =>
       prisma.slotResponse.create({
         data: {

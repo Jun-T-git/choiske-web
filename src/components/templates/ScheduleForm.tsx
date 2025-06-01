@@ -92,7 +92,7 @@ export const ScheduleForm: React.FC<ScheduleFormProps> = ({
     onSuccess: (savedScheduleId) => {
       if (scheduleId) {
         // 編集モードの場合：編集完了画面へ
-        router.push(`/host/${savedScheduleId}/edit?status=updated`);
+        router.push(`/host/${savedScheduleId}/done?mode=edit`);
       } else {
         // 新規作成の場合：作成完了画面へ
         router.push(`/host/${savedScheduleId}/done`);
@@ -120,6 +120,7 @@ export const ScheduleForm: React.FC<ScheduleFormProps> = ({
       });
     } catch (err) {
       // エラーはuseFormSubmit内で処理されるため、ここでは何もしない
+      console.error("フォーム送信中にエラーが発生しました:", err);
     }
   };
 

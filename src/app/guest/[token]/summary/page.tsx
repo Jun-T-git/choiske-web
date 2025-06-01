@@ -74,9 +74,9 @@ export default async function GuestSummaryPage({ params }: Props) {
               <FiUserPlus className="inline-block w-4 h-4" />
               日程調整に回答する
             </LinkButton>
-            {/* <span className="text-xs text-gray-500 ml-1">
+            <span className="text-xs text-gray-500 ml-1">
               ※ 回答は何度でも編集できます
-            </span> */}
+            </span>
           </div>
 
           <ScheduleSharePanel

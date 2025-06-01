@@ -37,6 +37,14 @@ export function useToast(options: UseToastOptions = {}) {
   const [visible, setVisible] = useState(false);
   const [type, setType] = useState<"success" | "error" | "info" | "warning">("info");
 
+  const hideToast = useCallback(() => {
+    setVisible(false);
+    
+    if (onHide) {
+      onHide();
+    }
+  }, [onHide]);
+
   /**
    * トーストを表示する
    */
@@ -60,19 +68,8 @@ export function useToast(options: UseToastOptions = {}) {
         }, duration);
       }
     },
-    [autoClose, duration, onShow]
+    [autoClose, duration, onShow, hideToast]
   );
-
-  /**
-   * トーストを非表示にする
-   */
-  const hideToast = useCallback(() => {
-    setVisible(false);
-    
-    if (onHide) {
-      onHide();
-    }
-  }, [onHide]);
 
   // コンポーネントがアンマウントされたときにタイマーをクリアするため、
   // visibleが変わったときにeffectを実行
