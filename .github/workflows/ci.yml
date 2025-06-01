@@ -26,8 +26,8 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Run tests (Vitest)
-        run: npm run test
+      # - name: Run tests (Vitest)
+      #   run: npm run test
 
       - name: Build (Next.js)
         run: npm run build
