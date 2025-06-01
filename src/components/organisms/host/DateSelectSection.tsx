@@ -88,32 +88,16 @@ export const DateSelectSection: FC<{
         />
       </div>
 
-      <div className="text-center mt-3">
-        <button
-          type="button"
-          className={`text-xs font-semibold inline-flex items-center ${
-            showBatchSelect
-              ? "text-blue-600 underline"
-              : "text-gray-500 hover:text-blue-600"
-          }`}
-          onClick={() => setShowBatchSelect(!showBatchSelect)}
-        >
-          {showBatchSelect ? "閉じる ↑" : "まとめて選択 ↓"}
-        </button>
-      </div>
-
-      {showBatchSelect && (
-        <BatchSelectPanel
-          show={showBatchSelect}
-          onToggle={() => setShowBatchSelect(!showBatchSelect)}
-          weekdayToggles={weekdayToggles}
-          toggleWeekdayButton={toggleWeekdayButton}
-          allDaysToggled={allDaysToggled}
-          toggleAllDaysInMonth={toggleAllDaysInMonth}
-          WEEK_LABELS={WEEK_LABELS}
-          currentMonthDays={currentMonthDays}
-        />
-      )}
+      <BatchSelectPanel
+        show={showBatchSelect}
+        onToggle={() => setShowBatchSelect(!showBatchSelect)}
+        weekdayToggles={weekdayToggles}
+        toggleWeekdayButton={toggleWeekdayButton}
+        allDaysToggled={allDaysToggled}
+        toggleAllDaysInMonth={toggleAllDaysInMonth}
+        WEEK_LABELS={WEEK_LABELS}
+        currentMonthDays={currentMonthDays}
+      />
 
       <SelectedDaysList
         selectedDays={selectedDays}

@@ -9,9 +9,9 @@ import { NextRequest, NextResponse } from "next/server";
  */
 export async function GET(
   req: NextRequest,
-  { params }: { params: { token: string } }
+  { params }: { params: Promise<{ token: string }> }
 ) {
-  const { token } = params;
+  const { token } = await params;
   try {
     const answer = await getAnswerByEditToken(token);
     if (!answer) {
@@ -32,9 +32,9 @@ export async function GET(
  */
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { token: string } }
+  { params }: { params: Promise<{ token: string }> }
 ) {
-  const { token } = params;
+  const { token } = await params;
   try {
     const body = await req.json();
     // 必須項目チェック
