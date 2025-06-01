@@ -14,10 +14,11 @@ export async function createSchedule(
   slotSizeMinutes: number,
   slots: string[]
 ): Promise<string> {
+  const slotsIsoStr = slots.map((slot) => new Date(slot).toISOString()); // ISO 8601形式に変換
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/schedules`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({title, description, slotSizeMinutes, slots}),
+    body: JSON.stringify({title, description, slotSizeMinutes, slots: slotsIsoStr}),
   });
   if (!res.ok) {
     throw new Error("Failed to create schedule");
@@ -85,10 +86,11 @@ export async function updateSchedule(
   slotSizeMinutes: number,
   slots: string[]
 ): Promise<string> {
+  const slotsIsoStr = slots.map((slot) => new Date(slot).toISOString()); // ISO 8601形式に変換
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/schedules/${scheduleId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ title, description, slotSizeMinutes, slots }),
+    body: JSON.stringify({ title, description, slotSizeMinutes, slots: slotsIsoStr }),
   });
   if (!res.ok) {
     throw new Error("Failed to update schedule");
