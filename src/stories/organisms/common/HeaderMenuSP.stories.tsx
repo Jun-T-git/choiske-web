@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { HeaderMenuSP } from "../../../components/organisms/common/HeaderMenuSP";
 
 const meta = {

@@ -1,5 +1,5 @@
 import { SlotStatus } from "@/constants/slotStatus";
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { AnswerForm } from "../../components/templates/AnswerForm";
 
 const meta = {

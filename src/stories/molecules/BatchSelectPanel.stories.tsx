@@ -1,5 +1,5 @@
 // filepath: /src/stories/molecules/BatchSelectPanel.stories.tsx
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { BatchSelectPanel } from "../../components/molecules/BatchSelectPanel";
 
 const WEEK_LABELS = ["日", "月", "火", "水", "木", "金", "土"];

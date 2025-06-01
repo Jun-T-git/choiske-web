@@ -1,6 +1,6 @@
 // filepath: /src/stories/molecules/CalendarSelector.stories.tsx
 
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { CalendarSelector } from "../../components/molecules/CalendarSelector";
 
 const noop = () => {};

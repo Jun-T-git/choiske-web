@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { GuestSummaryTable } from "../../../components/organisms/guest/GuestSummaryTable";
 import { SlotStatus } from "../../../constants/slotStatus";
 

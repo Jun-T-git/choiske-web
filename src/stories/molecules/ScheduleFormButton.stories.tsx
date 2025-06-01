@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ScheduleFormButton } from "../../components/molecules/ScheduleFormButton";
 
 const meta = {
