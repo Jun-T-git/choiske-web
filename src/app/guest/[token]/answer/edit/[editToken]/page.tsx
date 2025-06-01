@@ -1,6 +1,4 @@
-import { CopyableText } from "@/components/atoms/CopyableText";
 import { SectionHeading } from "@/components/atoms/SectionHeading";
-import { ShareButtons } from "@/components/molecules/ShareButtons";
 import { AnswerForm } from "@/components/templates/AnswerForm";
 import { getAnswerByEditToken } from "@/lib/queries/answer";
 import { fetchScheduleByToken } from "@/lib/queries/schedule";
@@ -33,42 +31,28 @@ const EditAnswerPage: FC<EditAnswerPageProps> = async ({ params }) => {
 
     return (
       <main className="max-w-4xl mx-auto px-1 sm:px-8 pt-5 pb-10">
-        <SectionHeading>{title}</SectionHeading>
-        <p className="mt-2 mb-6 text-gray-600 whitespace-pre-line">
-          {description}
-        </p>
-
-        <div className="bg-white p-4 rounded-lg shadow-sm border border-blue-100 mb-6">
-          <h3 className="text-sm font-medium text-gray-700 mb-2">
-            この編集用URLを保存
-          </h3>
-          <p className="text-xs text-gray-500 mb-3">
-            このURLを使うと後からいつでも回答を編集できます
-          </p>
-          <CopyableText value={editUrl} className="text-sm" />
-          <div className="mt-3 pt-3 border-t border-gray-100">
-            <ShareButtons
-              url={editUrl}
-              title={`${title} - 回答編集URL`}
-              message={`「${title}」の日程調整回答を編集するためのURLです。`}
-              compact={true}
-            />
+        <div className="shadow-xl rounded-2xl px-3 sm:px-8 py-8 mx-auto space-y-7 border border-gray-100 bg-white/90">
+          <div className="pb-2">
+            <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
+            {description && (
+              <p className="text-gray-600 whitespace-pre-line mt-2">
+                {description}
+              </p>
+            )}
           </div>
-        </div>
 
-        <div className="mt-6">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">回答を編集</h2>
-          <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-            <AnswerForm
-              token={token}
-              editToken={editToken}
-              timeSlots={timeSlots}
-              mode="edit"
-              initialName={answer.name}
-              initialComment={answer.comment}
-              initialResponses={answer.slotResponses}
-            />
-          </div>
+          <div className="w-full border-b border-gray-200 mb-6"></div>
+
+          <SectionHeading>回答を編集</SectionHeading>
+          <AnswerForm
+            token={token}
+            editToken={editToken}
+            timeSlots={timeSlots}
+            mode="edit"
+            initialName={answer.name}
+            initialComment={answer.comment}
+            initialResponses={answer.slotResponses}
+          />
         </div>
       </main>
     );

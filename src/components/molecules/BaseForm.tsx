@@ -16,7 +16,7 @@ export const BaseForm: FC<BaseFormProps> = ({
   onSubmit,
   children,
   errorMessage,
-  className = "bg-white/90 shadow-xl rounded-2xl px-4 sm:px-8 py-8 max-w-2xl mx-auto space-y-7 border border-gray-100",
+  className = "mx-auto space-y-7",
   id,
 }) => {
   return (
