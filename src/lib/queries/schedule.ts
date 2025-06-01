@@ -72,7 +72,7 @@ export async function fetchScheduleById(
   const data = await res.json();
   // JST文字列に変換
   if (data.timeSlots) {
-    data.timeSlots = data.timeSlots.map((slot: any) => ({
+    data.timeSlots = data.timeSlots.map((slot: TimeSlot) => ({
       ...slot,
       slotStart: toJstIsoString(new Date(slot.slotStart)),
     }));
@@ -94,7 +94,7 @@ export async function fetchScheduleByToken(
   }
   const data = await res.json();
   if (data.timeSlots) {
-    data.timeSlots = data.timeSlots.map((slot: any) => ({
+    data.timeSlots = data.timeSlots.map((slot: TimeSlot) => ({
       ...slot,
       slotStart: toJstIsoString(new Date(slot.slotStart)),
     }));
@@ -150,18 +150,10 @@ export async function fetchScheduleWithAnswersByToken(
   const data = await res.json();
   // JST変換（例: timeSlots, answersなど必要な日付フィールドを変換）
   if (data.timeSlots) {
-    data.timeSlots = data.timeSlots.map((slot: any) => ({
+    data.timeSlots = data.timeSlots.map((slot: TimeSlot) => ({
       ...slot,
       slotStart: toJstIsoString(new Date(slot.slotStart)),
     }));
-  }
-  if (data.answers) {
-    data.answers = data.answers.map((ans: any) => {
-      if (ans.selectedSlots) {
-        ans.selectedSlots = ans.selectedSlots.map((slot: string) => toJstIsoString(new Date(slot)));
-      }
-      return ans;
-    });
   }
   return data;
 }
