@@ -24,11 +24,6 @@ const EditAnswerPage: FC<EditAnswerPageProps> = async ({ params }) => {
 
     const { title, description, timeSlots } = schedule;
 
-    // 編集用URL
-    const editUrl = `${
-      process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
-    }/guest/${token}/answer/edit/${editToken}`;
-
     return (
       <main className="max-w-4xl mx-auto px-1 sm:px-8 pt-5 pb-10">
         <div className="shadow-xl rounded-2xl px-3 sm:px-8 py-8 mx-auto space-y-7 border border-gray-100 bg-white/90">
