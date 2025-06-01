@@ -51,7 +51,7 @@ export async function getScheduleById(
     // TimeSlotを含む場合
     const schedule = await prisma.schedule.findUnique({
       where: { id: scheduleId },
-      include: { timeSlots: true },
+      include: { timeSlots: { orderBy: { slotStart: 'asc' } } },
     });
     if (!schedule) return null;
     return {
@@ -88,7 +88,7 @@ export async function getScheduleByToken(publicToken: string, includeAnswers: bo
     const schedule = await prisma.schedule.findFirst({
       where: { publicToken },
       include: {
-        timeSlots: true,
+        timeSlots: { orderBy: { slotStart: 'asc' } },
         answers: {
           include: {
             slotResponses: true,
@@ -116,7 +116,7 @@ export async function getScheduleByToken(publicToken: string, includeAnswers: bo
   // 回答を含めず返す場合
   const schedule = await prisma.schedule.findFirst({
     where: { publicToken },
-    include: { timeSlots: true },
+    include: { timeSlots: { orderBy: { slotStart: 'asc' } } },
   });
   if (!schedule) return null;
   return {
