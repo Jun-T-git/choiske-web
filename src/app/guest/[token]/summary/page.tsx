@@ -16,11 +16,14 @@ export default async function GuestSummaryPage({ params }: Props) {
   const data = await fetchScheduleWithAnswersByToken(token);
   if (!data) return <div>スケジュールが見つかりません</div>;
   const schedule = data;
-  const timeSlots =
+  const timeSlots = (
     data.timeSlots?.map((slot) => ({
       ...slot,
       slotStart: toJstIsoString(new Date(slot.slotStart)),
-    })) ?? [];
+    })) ?? []
+  ).sort(
+    (a, b) => new Date(a.slotStart).getTime() - new Date(b.slotStart).getTime()
+  );
   const answers = (data.answers ?? []).map((a) => ({
     ...a,
     slotResponses: a.slotResponses ?? [],
@@ -79,9 +82,9 @@ export default async function GuestSummaryPage({ params }: Props) {
               <FiUserPlus className="inline-block w-4 h-4" />
               日程調整に回答する
             </LinkButton>
-            {/* <span className="text-xs text-gray-500 ml-1">
+            <span className="text-xs text-gray-500 ml-1">
               ※ 回答は何度でも編集できます
-            </span> */}
+            </span>
           </div>
 
           <ScheduleSharePanel

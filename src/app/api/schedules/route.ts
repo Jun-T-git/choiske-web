@@ -18,6 +18,7 @@ const scheduleSchema = z.object({
  */
 export async function POST(req: NextRequest) {
   const body = await req.json();
+  console.log("Received body:", body);
   const result = scheduleSchema.safeParse(body);
   if (!result.success) {
     console.log("Validation error", result.error.flatten());
