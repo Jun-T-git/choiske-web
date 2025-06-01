@@ -4,7 +4,6 @@ import { ShareButtons } from "@/components/molecules/ShareButtons";
 import { AnswerForm } from "@/components/templates/AnswerForm";
 import { getAnswerByEditToken } from "@/lib/queries/answer";
 import { fetchScheduleByToken } from "@/lib/queries/schedule";
-import { toJstIsoString } from "@/lib/utils/dateUtils";
 import { notFound } from "next/navigation";
 import { FC } from "react";
 
@@ -26,12 +25,6 @@ const EditAnswerPage: FC<EditAnswerPageProps> = async ({ params }) => {
     if (!answer || answer.scheduleId !== schedule.id) notFound();
 
     const { title, description, timeSlots } = schedule;
-    const timeSlotsJst = timeSlots.map((slot) => {
-      return {
-        ...slot,
-        slotStart: toJstIsoString(new Date(slot.slotStart)),
-      };
-    });
 
     // 編集用URL
     const editUrl = `${
@@ -69,7 +62,7 @@ const EditAnswerPage: FC<EditAnswerPageProps> = async ({ params }) => {
             <AnswerForm
               token={token}
               editToken={editToken}
-              timeSlots={timeSlotsJst}
+              timeSlots={timeSlots}
               mode="edit"
               initialName={answer.name}
               initialComment={answer.comment}

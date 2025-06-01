@@ -1,6 +1,7 @@
 import { ScheduleForm } from "@/components/templates/ScheduleForm";
 import { fetchScheduleById } from "@/lib/queries/schedule";
 import { toJstIsoString } from "@/lib/utils/dateUtils";
+import { addMinutes } from "date-fns";
 import { notFound } from "next/navigation";
 
 /**
@@ -14,26 +15,29 @@ export default async function ScheduleEditPage({
 }) {
   const { scheduleId } = await params;
   const schedule = await fetchScheduleById(scheduleId);
-  // slotStartのISO文字列を全てUTCからJSTに変換
-  const timeSlotsJst = schedule?.timeSlots.map((slot) => {
-    return {
-      ...slot,
-      slotStart: toJstIsoString(new Date(slot.slotStart)),
-    };
-  });
   // slotStartのISO文字列を全て00:00に変換し、リストから重複を排除
   const selectedDays = Array.from(
-    new Set(timeSlotsJst.map((slot) => slot.slotStart.split("T")[0]))
+    new Set(schedule.timeSlots.map((slot) => slot.slotStart.split("T")[0]))
   );
   // スロットサイズ（分）
   const slotSize = schedule?.slotSizeMinutes;
   const withTime = schedule?.slotSizeMinutes !== 1440;
   // ISO文字列から時間部分を抽出（例: "2023-10-01T10:00:00+09:00" -> "10:00")
   const timeFrom = withTime
-    ? timeSlotsJst[0]?.slotStart.split("T")[1].slice(0, 5)
+    ? schedule.timeSlots[0]?.slotStart.split("T")[1].slice(0, 5)
     : undefined;
+  // 最後のスロットにスロットサイズ(分)を加算し、時間部分を抽出（例: "2023-10-01T10:00:00+09:00" + 60 -> "11:00"）
   const timeTo = withTime
-    ? timeSlotsJst[timeSlotsJst.length - 1]?.slotStart.split("T")[1].slice(0, 5)
+    ? toJstIsoString(
+        addMinutes(
+          new Date(
+            schedule.timeSlots[schedule.timeSlots.length - 1]?.slotStart
+          ),
+          schedule.slotSizeMinutes || 0
+        )
+      )
+        .split("T")[1]
+        .slice(0, 5)
     : undefined;
   if (!schedule) return notFound();
 

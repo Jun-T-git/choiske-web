@@ -82,10 +82,11 @@ export function useScheduleSelect(options?: {
     const fullSlots: string[] = [];
     
     dateSelect.selectedDays.forEach(day => {
-      const dateStr = day.toISOString().split('T')[0]; // YYYY-MM-DD
-      
       timeSlots.forEach(timeStr => {
-        fullSlots.push(`${dateStr}T${timeStr}:00`);
+        const slot = new Date(day);
+        const [hour, minute] = timeStr.split(":").map(Number);
+        slot.setHours(hour, minute, 0, 0);
+        fullSlots.push(slot.toISOString());
       });
     });
     

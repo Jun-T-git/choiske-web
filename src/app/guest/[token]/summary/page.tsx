@@ -3,7 +3,6 @@ import { ScheduleSharePanel } from "@/components/molecules/ScheduleSharePanel";
 import { GuestSummaryTable } from "@/components/organisms/guest/GuestSummaryTable";
 import { SlotStatus } from "@/constants/slotStatus";
 import { fetchScheduleWithAnswersByToken } from "@/lib/queries/schedule";
-import { toJstIsoString } from "@/lib/utils/dateUtils";
 import { FiUserPlus, FiUsers } from "react-icons/fi";
 
 interface Props {
@@ -16,14 +15,6 @@ export default async function GuestSummaryPage({ params }: Props) {
   const data = await fetchScheduleWithAnswersByToken(token);
   if (!data) return <div>スケジュールが見つかりません</div>;
   const schedule = data;
-  const timeSlots = (
-    data.timeSlots?.map((slot) => ({
-      ...slot,
-      slotStart: toJstIsoString(new Date(slot.slotStart)),
-    })) ?? []
-  ).sort(
-    (a, b) => new Date(a.slotStart).getTime() - new Date(b.slotStart).getTime()
-  );
   const answers = (data.answers ?? []).map((a) => ({
     ...a,
     slotResponses: a.slotResponses ?? [],
@@ -31,35 +22,36 @@ export default async function GuestSummaryPage({ params }: Props) {
 
   // スロットごとに集計
   // 日付ごとに区切り線を入れるため、各スロットにdate情報を付与
-  const slots = timeSlots.map((slot) => {
-    // slotStartからdate, timeを生成
-    const [date, timeWithSec] = slot.slotStart.split("T");
-    const time = timeWithSec?.slice(0, 5) ?? "";
-    const statusCounts = {
-      [SlotStatus.OK]: 0,
-      [SlotStatus.NG]: 0,
-      [SlotStatus.PENDING]: 0,
-    };
-    answers.forEach((a) => {
-      const resp = a.slotResponses?.find((r) => r.slotId === slot.id);
-      if (
-        resp &&
-        (resp.status === SlotStatus.OK ||
-          resp.status === SlotStatus.NG ||
-          resp.status === SlotStatus.PENDING)
-      ) {
-        statusCounts[resp.status as SlotStatus] =
-          (statusCounts[resp.status as SlotStatus] || 0) + 1;
-      }
-    });
-    return {
-      slotId: slot.id,
-      slotStart: slot.slotStart,
-      date,
-      time,
-      statusCounts,
-    };
-  });
+  const slots =
+    schedule.timeSlots?.map((slot) => {
+      // slotStartからdate, timeを生成
+      const [date, timeWithSec] = slot.slotStart.split("T");
+      const time = timeWithSec?.slice(0, 5) ?? "";
+      const statusCounts = {
+        [SlotStatus.OK]: 0,
+        [SlotStatus.NG]: 0,
+        [SlotStatus.PENDING]: 0,
+      };
+      answers.forEach((a) => {
+        const resp = a.slotResponses?.find((r) => r.slotId === slot.id);
+        if (
+          resp &&
+          (resp.status === SlotStatus.OK ||
+            resp.status === SlotStatus.NG ||
+            resp.status === SlotStatus.PENDING)
+        ) {
+          statusCounts[resp.status as SlotStatus] =
+            (statusCounts[resp.status as SlotStatus] || 0) + 1;
+        }
+      });
+      return {
+        slotId: slot.id,
+        slotStart: slot.slotStart,
+        date,
+        time,
+        statusCounts,
+      };
+    }) || [];
 
   return (
     <>

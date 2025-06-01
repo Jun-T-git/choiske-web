@@ -2,7 +2,6 @@ import { SectionHeading } from "@/components/atoms/SectionHeading";
 import { ScheduleSharePanel } from "@/components/molecules/ScheduleSharePanel";
 import { AnswerForm } from "@/components/templates/AnswerForm";
 import { fetchScheduleByToken } from "@/lib/queries/schedule";
-import { toJstIsoString } from "@/lib/utils/dateUtils";
 import { notFound } from "next/navigation";
 import { FC } from "react";
 
@@ -18,12 +17,6 @@ const AnswerPage: FC<AnswerPageProps> = async ({ params }) => {
   if (!schedule) notFound();
 
   const { title, description, timeSlots } = schedule;
-  const timeSlotsJst = timeSlots.map((slot) => {
-    return {
-      ...slot,
-      slotStart: toJstIsoString(new Date(slot.slotStart)),
-    };
-  });
 
   return (
     <main className="max-w-4xl mx-auto px-1 sm:px-8 pt-5 pb-10">
@@ -36,7 +29,7 @@ const AnswerPage: FC<AnswerPageProps> = async ({ params }) => {
           )}
           <ScheduleSharePanel title={title} token={token} className="mt-6" />
         </div>
-        <AnswerForm token={token} timeSlots={timeSlotsJst} mode="create" />
+        <AnswerForm token={token} timeSlots={timeSlots} mode="create" />
       </div>
     </main>
   );

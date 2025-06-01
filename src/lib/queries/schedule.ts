@@ -1,5 +1,6 @@
+import { toJstIsoString } from "@/lib/utils/dateUtils";
 import { Schedule, ScheduleSummary, ScheduleWithAnswers } from "@/types/schedule";
-import { TimeSlot } from "@prisma/client";
+import { TimeSlot } from "@/types/timeSlot";
 
 /**
  * スケジュール作成APIを呼び出すクライアント関数
@@ -12,13 +13,20 @@ export async function createSchedule(
   title: string,
   description: string | undefined,
   slotSizeMinutes: number,
-  slots: string[]
+  slots: (string | Date)[]
 ): Promise<string> {
-  const slotsIsoStr = slots.map((slot) => new Date(slot).toISOString()); // ISO 8601形式に変換
+  // slotsをUTCのISO文字列に変換
+  const utcSlots = slots.map(slot => {
+    if (typeof slot === 'string') {
+      // 既にISO文字列ならDateに変換してからtoISOString
+      return new Date(slot).toISOString();
+    }
+    return slot.toISOString();
+  });
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/schedules`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({title, description, slotSizeMinutes, slots: slotsIsoStr}),
+    body: JSON.stringify({title, description, slotSizeMinutes, slots: utcSlots}),
   });
   if (!res.ok) {
     throw new Error("Failed to create schedule");
@@ -38,7 +46,15 @@ export async function fetchScheduleSummaryById(
   if (!res.ok) {
     throw new Error("Failed to fetch schedule summary");
   }
-  return res.json();
+  const data = await res.json();
+  // JST文字列に変換（例: slotsや日付フィールドがあれば変換）
+  if (data.slots) {
+    data.slots = data.slots.map((slot: string) => toJstIsoString(new Date(slot)));
+  }
+  if (data.date) {
+    data.date = toJstIsoString(new Date(data.date));
+  }
+  return data;
 }
 
 /**
@@ -53,7 +69,15 @@ export async function fetchScheduleById(
   if (!res.ok) {
     throw new Error("Failed to fetch schedule");
   }
-  return res.json();
+  const data = await res.json();
+  // JST文字列に変換
+  if (data.timeSlots) {
+    data.timeSlots = data.timeSlots.map((slot: TimeSlot) => ({
+      ...slot,
+      slotStart: toJstIsoString(new Date(slot.slotStart)),
+    }));
+  }
+  return data;
 }
 
 /**
@@ -68,7 +92,14 @@ export async function fetchScheduleByToken(
   if (!res.ok) {
     throw new Error("Failed to fetch schedule by token");
   }
-  return res.json();
+  const data = await res.json();
+  if (data.timeSlots) {
+    data.timeSlots = data.timeSlots.map((slot: TimeSlot) => ({
+      ...slot,
+      slotStart: toJstIsoString(new Date(slot.slotStart)),
+    }));
+  }
+  return data;
 }
 
 /**
@@ -84,13 +115,19 @@ export async function updateSchedule(
   title: string,
   description: string | undefined,
   slotSizeMinutes: number,
-  slots: string[]
+  slots: (string | Date)[]
 ): Promise<string> {
-  const slotsIsoStr = slots.map((slot) => new Date(slot).toISOString()); // ISO 8601形式に変換
+  // slotsをUTCのISO文字列に変換
+  const utcSlots = slots.map(slot => {
+    if (typeof slot === 'string') {
+      return new Date(slot).toISOString();
+    }
+    return slot.toISOString();
+  });
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/schedules/${scheduleId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ title, description, slotSizeMinutes, slots: slotsIsoStr }),
+    body: JSON.stringify({ title, description, slotSizeMinutes, slots: utcSlots }),
   });
   if (!res.ok) {
     throw new Error("Failed to update schedule");
@@ -110,5 +147,13 @@ export async function fetchScheduleWithAnswersByToken(
   if (!res.ok) {
     throw new Error("Failed to fetch schedule with answers by token");
   }
-  return res.json();
+  const data = await res.json();
+  // JST変換（例: timeSlots, answersなど必要な日付フィールドを変換）
+  if (data.timeSlots) {
+    data.timeSlots = data.timeSlots.map((slot: TimeSlot) => ({
+      ...slot,
+      slotStart: toJstIsoString(new Date(slot.slotStart)),
+    }));
+  }
+  return data;
 }
