@@ -59,6 +59,7 @@ describe("useFormSubmit", () => {
         await result.current.submitForm({ name: "テスト太郎" });
       } catch (e) {
         // エラーをキャッチするだけ
+        console.error(e);
       }
     });
 
