@@ -1,3 +1,4 @@
+import { validateLength } from "@/lib/utils/validationUtils";
 import { FC, TextareaHTMLAttributes, useEffect, useState } from "react";
 import { InputLabel } from "./InputLabel";
 
@@ -15,6 +16,7 @@ export type TextareaInputProps = {
   minLength?: number;
   showLength?: boolean;
   errorMessage?: string;
+  fieldName?: string;
 } & Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "value" | "onChange">;
 
 /**
@@ -34,19 +36,22 @@ export const TextareaInput: FC<TextareaInputProps> = ({
   minLength,
   showLength = false,
   errorMessage,
+  fieldName,
   ...props
 }) => {
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    if (maxLength && value.length > maxLength) {
-      setError(errorMessage || `${maxLength}文字以内で入力してください`);
-    } else if (minLength && value.length < minLength) {
-      setError(errorMessage || `${minLength}文字以上入力してください`);
-    } else {
-      setError("");
-    }
-  }, [value, maxLength, minLength, errorMessage]);
+    const validationError = validateLength(value, {
+      minLength,
+      maxLength,
+      required,
+      fieldName: fieldName || label || "テキスト",
+    });
+
+    // カスタムエラーメッセージが指定されていれば、それを優先
+    setError(errorMessage || validationError || "");
+  }, [value, maxLength, minLength, required, errorMessage, fieldName, label]);
 
   return (
     <div className={className}>

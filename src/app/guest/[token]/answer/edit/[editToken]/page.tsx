@@ -1,7 +1,7 @@
 import { CopyableText } from "@/components/atoms/CopyableText";
 import { SectionHeading } from "@/components/atoms/SectionHeading";
 import { ShareButtons } from "@/components/molecules/ShareButtons";
-import { AnswerEditForm } from "@/components/templates/AnswerEditForm";
+import { AnswerForm } from "@/components/templates/AnswerForm";
 import { getAnswerByEditToken } from "@/lib/queries/answer";
 import { fetchScheduleByToken } from "@/lib/queries/schedule";
 import { toJstIsoString } from "@/lib/utils/dateUtils";
@@ -66,10 +66,11 @@ const EditAnswerPage: FC<EditAnswerPageProps> = async ({ params }) => {
         <div className="mt-6">
           <h2 className="text-xl font-bold text-gray-800 mb-4">回答を編集</h2>
           <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-            <AnswerEditForm
+            <AnswerForm
               token={token}
               editToken={editToken}
               timeSlots={timeSlotsJst}
+              mode="edit"
               initialName={answer.name}
               initialComment={answer.comment}
               initialResponses={answer.slotResponses}

@@ -36,7 +36,7 @@ const AnswerPage: FC<AnswerPageProps> = async ({ params }) => {
           )}
           <ScheduleSharePanel title={title} token={token} className="mt-6" />
         </div>
-        <AnswerForm token={token} timeSlots={timeSlotsJst} />
+        <AnswerForm token={token} timeSlots={timeSlotsJst} mode="create" />
       </div>
     </main>
   );

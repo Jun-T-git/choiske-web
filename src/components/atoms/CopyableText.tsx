@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useState } from "react";
+import { useClipboard } from "@/lib/hooks/useClipboard";
 import { FiCheck, FiCopy } from "react-icons/fi";
 
 /**
@@ -21,14 +21,12 @@ export function CopyableText({
   inputClassName?: string;
   buttonClassName?: string;
 }) {
-  const [copied, setCopied] = useState(false);
+  const { copy, copied } = useClipboard({ timeout: 1200 });
 
-  const handleCopy = useCallback(async () => {
+  const handleCopy = async () => {
     if (!value) return;
-    await navigator.clipboard.writeText(value);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1200);
-  }, [value]);
+    await copy(value);
+  };
 
   return (
     <div className={`mb-4 ${className ?? ""}`}>

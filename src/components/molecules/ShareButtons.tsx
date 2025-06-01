@@ -1,6 +1,8 @@
 "use client";
-import { useState } from "react";
-import { FiCopy, FiMail, FiX } from "react-icons/fi";
+import { Toast } from "@/components/atoms/Toast";
+import { useClipboard } from "@/lib/hooks/useClipboard";
+import { useToast } from "@/lib/hooks/useToast";
+import { FiCopy, FiMail } from "react-icons/fi";
 
 interface ShareButtonsProps {
   url: string;
@@ -20,8 +22,21 @@ export const ShareButtons = ({
   compact = false,
   className = "",
 }: ShareButtonsProps) => {
-  const [copied, setCopied] = useState(false);
-  const [showToast, setShowToast] = useState(false);
+  const { copy, copied } = useClipboard({
+    timeout: 1500,
+    onError: (err) =>
+      console.error("クリップボードへのコピーに失敗しました", err),
+  });
+
+  const {
+    showToast,
+    hideToast,
+    visible,
+    message: toastMessage,
+  } = useToast({
+    duration: 1800,
+    autoClose: true,
+  });
 
   // URLをエンコード
   const encodedUrl = encodeURIComponent(url);
@@ -36,22 +51,10 @@ export const ShareButtons = ({
 
   // URLコピー
   const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(url);
-      setCopied(true);
-      setShowToast(true);
-      setTimeout(() => {
-        setCopied(false);
-        setTimeout(() => setShowToast(false), 300);
-      }, 1500);
-    } catch (err) {
-      console.error("クリップボードへのコピーに失敗しました", err);
+    const success = await copy(url);
+    if (success) {
+      showToast("URLをコピーしました", "success");
     }
-  };
-
-  // トースト消去
-  const handleCloseToast = () => {
-    setShowToast(false);
   };
 
   return (
@@ -118,18 +121,13 @@ export const ShareButtons = ({
       </div>
 
       {/* トースト通知 */}
-      {showToast && (
-        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg flex items-center z-50 animate-fade-in">
-          <span className="mr-2">URLをコピーしました</span>
-          <button
-            onClick={handleCloseToast}
-            className="p-1 hover:bg-gray-700 rounded-full"
-            aria-label="閉じる"
-          >
-            <FiX size={16} />
-          </button>
-        </div>
-      )}
+      <Toast
+        isVisible={visible}
+        message={toastMessage}
+        onClose={hideToast}
+        type="success"
+        position="bottom"
+      />
     </div>
   );
 };

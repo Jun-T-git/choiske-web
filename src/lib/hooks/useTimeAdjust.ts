@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { validateTimeFormat, validateTimeRange } from "@/lib/utils/validationUtils";
+import { useEffect, useState } from "react";
 
 /**
  * 時間調整に関する状態とロジックを管理するカスタムフック
@@ -17,6 +18,38 @@ export function useTimeAdjust(options?: {
   const [timeFrom, setTimeFrom] = useState(options?.initialTimeFrom ?? "09:00");
   const [timeTo, setTimeTo] = useState(options?.initialTimeTo ?? "18:00");
   const [slotSize, setSlotSize] = useState(options?.initialSlotSize ?? 60); // デフォルト1時間ごと（終日選択時は1日）
+  // バリデーションエラー
+  const [timeError, setTimeError] = useState<string | null>(null);
+
+  // 時間のバリデーション
+  useEffect(() => {
+    if (!withTime) {
+      setTimeError(null);
+      return;
+    }
+    
+    // 各時間のフォーマットを検証
+    const fromError = validateTimeFormat(timeFrom);
+    if (fromError) {
+      setTimeError(fromError);
+      return;
+    }
+    
+    const toError = validateTimeFormat(timeTo);
+    if (toError) {
+      setTimeError(toError);
+      return;
+    }
+    
+    // 時間範囲を検証
+    const rangeError = validateTimeRange(timeFrom, timeTo);
+    if (rangeError) {
+      setTimeError(rangeError);
+      return;
+    }
+    
+    setTimeError(null);
+  }, [withTime, timeFrom, timeTo]);
 
   /**
    * 時間スロットを生成する関数
@@ -34,7 +67,7 @@ export function useTimeAdjust(options?: {
     const startTime = startHour * 60 + startMinute; // 開始時刻を分に変換
     const endTime = endHour * 60 + endMinute; // 終了時刻を分に変換
     const slots = [];
-    for (let time = startTime; time <= endTime; time += slotSize) {
+    for (let time = startTime; time < endTime; time += slotSize) {
       const hour = Math.floor(time / 60).toString().padStart(2, "0");
       const minute = (time % 60).toString().padStart(2, "0");
       slots.push(`${hour}:${minute}`);
@@ -52,5 +85,6 @@ export function useTimeAdjust(options?: {
     slotSize,
     setSlotSize,
     generateTimeSlots,
+    timeError,
   };
 }
