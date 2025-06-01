@@ -83,29 +83,36 @@ export const AnswerForm: FC<AnswerFormProps> = ({
       slotMetaList.map((s) => ({ slotId: s.slotId, status: SlotStatus.OK }))
   );
 
-  // フォーム送信関数を選択
-  const submitFn = isEditMode
-    ? (data: EditAnswerFormData) => editAnswerByToken(editToken, data)
-    : (data: CreateAnswerFormData) => createAnswer(data);
-
   // フォーム送信ロジック
-  const { submitForm, isSubmitting, isSuccess, errorMessage } = useFormSubmit<
-    any, // TypeScriptの制限により、条件付き型を使用できないためanyで対応
-    any
+  const editFormSubmit = useFormSubmit<EditAnswerFormData, { id: string }>({
+    onSubmit: (data) => editAnswerByToken(editToken, data),
+    onError: (err) => {
+      console.error("回答更新中にエラーが発生しました", err);
+    },
+  });
+  const createFormSubmit = useFormSubmit<
+    CreateAnswerFormData,
+    { id: string; editToken: string }
   >({
-    onSubmit: submitFn,
+    onSubmit: (data) => createAnswer(data),
     onSuccess: (response) => {
-      if (!isEditMode && "editToken" in response) {
+      if (typeof response === "object" && response && "editToken" in response) {
         setResponseEditToken(response.editToken);
       }
     },
     onError: (err) => {
-      console.error(
-        `回答${isEditMode ? "更新" : "送信"}中にエラーが発生しました`,
-        err
-      );
+      console.error("回答送信中にエラーが発生しました", err);
     },
   });
+  const isSubmitting = isEditMode
+    ? editFormSubmit.isSubmitting
+    : createFormSubmit.isSubmitting;
+  const isSuccess = isEditMode
+    ? editFormSubmit.isSuccess
+    : createFormSubmit.isSuccess;
+  const errorMessage = isEditMode
+    ? editFormSubmit.errorMessage
+    : createFormSubmit.errorMessage;
 
   // セルクリック
   const handleCellClick = (slotId: string) => {
@@ -149,24 +156,19 @@ export const AnswerForm: FC<AnswerFormProps> = ({
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
-    try {
-      const baseData = {
+    if (isEditMode) {
+      await editFormSubmit.submitForm({
         name,
         comment,
         slotResponses: statusList,
-      };
-
-      if (isEditMode) {
-        await submitForm(baseData);
-      } else {
-        await submitForm({
-          ...baseData,
-          scheduleId: timeSlots[0]?.scheduleId ?? "",
-        });
-      }
-    } catch (err) {
-      // エラーはuseFormSubmit内で処理されるため、ここでは何もしない
+      });
+    } else {
+      await createFormSubmit.submitForm({
+        name,
+        comment,
+        slotResponses: statusList,
+        scheduleId: timeSlots[0]?.scheduleId ?? "",
+      });
     }
   };
 

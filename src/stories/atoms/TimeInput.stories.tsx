@@ -49,7 +49,7 @@ export const Default: Story = {
   args: {
     label: "開始時間",
     value: "09:00",
-    onChange: (value: string) => {},
+    onChange: () => {},
   },
 };
 
@@ -68,7 +68,7 @@ export const Required: Story = {
     label: "集合時間",
     required: true,
     value: "10:30",
-    onChange: (value: string) => {},
+    onChange: () => {},
   },
 };
 
@@ -86,7 +86,7 @@ export const Empty: Story = {
   args: {
     label: "終了時間（任意）",
     value: "",
-    onChange: (value: string) => {},
+    onChange: () => {},
   },
 };
 
@@ -105,7 +105,7 @@ export const WithError: Story = {
     label: "予約時間",
     errorMessage: "有効な時間を入力してください",
     value: "25:00",
-    onChange: (value: string) => {},
+    onChange: () => {},
   },
 };
 
@@ -124,6 +124,6 @@ export const RequiredEmpty: Story = {
     label: "出発時間",
     required: true,
     value: "",
-    onChange: (value: string) => {},
+    onChange: () => {},
   },
 };

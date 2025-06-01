@@ -20,7 +20,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    onSubmit: (e: any) => {
+    onSubmit: (e: React.FormEvent<Element>) => {
       e.preventDefault();
     },
     errorMessage: "",
@@ -37,7 +37,7 @@ export const Default: Story = {
 
 export const WithError: Story = {
   args: {
-    onSubmit: (e: any) => {
+    onSubmit: (e: React.FormEvent<Element>) => {
       e.preventDefault();
     },
     errorMessage: "エラーが発生しました",

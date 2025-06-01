@@ -61,7 +61,7 @@ export const Default: Story = {
     label: "テキストフィールド",
     placeholder: "ここに入力してください",
     value: "",
-    onChange: (value: string) => {},
+    onChange: () => {},
   },
 };
 
@@ -81,7 +81,7 @@ export const Required: Story = {
     placeholder: "ここに入力してください",
     required: true,
     value: "",
-    onChange: (value: string) => {},
+    onChange: () => {},
   },
 };
 
@@ -102,7 +102,7 @@ export const WithCharacterLimit: Story = {
     maxLength: 20,
     showLength: true,
     value: "",
-    onChange: (value: string) => {},
+    onChange: () => {},
   },
 };
 
@@ -122,7 +122,7 @@ export const WithNote: Story = {
     placeholder: "フルネームを入力",
     note: "姓と名の間は半角スペースで区切ってください",
     value: "",
-    onChange: (value: string) => {},
+    onChange: () => {},
   },
 };
 
@@ -142,7 +142,7 @@ export const WithError: Story = {
     placeholder: "example@example.com",
     errorMessage: "有効なメールアドレスを入力してください",
     value: "入力済みテキスト",
-    onChange: (value: string) => {},
+    onChange: () => {},
   },
 };
 
@@ -161,6 +161,6 @@ export const Disabled: Story = {
     label: "無効化フィールド",
     disabled: true,
     value: "編集できない値",
-    onChange: (value: string) => {},
+    onChange: () => {},
   },
 };

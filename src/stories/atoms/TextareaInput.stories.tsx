@@ -63,7 +63,7 @@ export const Default: Story = {
     placeholder: "説明を入力してください",
     rows: 3,
     value: "",
-    onChange: (value: string) => {},
+    onChange: () => {},
   },
 };
 
@@ -84,7 +84,7 @@ export const Required: Story = {
     required: true,
     rows: 3,
     value: "",
-    onChange: (value: string) => {},
+    onChange: () => {},
   },
 };
 
@@ -106,7 +106,7 @@ export const WithCharacterLimit: Story = {
     showLength: true,
     rows: 5,
     value: "",
-    onChange: (value: string) => {},
+    onChange: () => {},
   },
 };
 
@@ -127,7 +127,7 @@ export const WithNote: Story = {
     note: "参加者が見ることができる情報です。場所や持ち物などを記載してください。",
     rows: 4,
     value: "",
-    onChange: (value: string) => {},
+    onChange: () => {},
   },
 };
 
@@ -148,7 +148,7 @@ export const WithError: Story = {
     errorMessage: "不適切な内容が含まれています",
     rows: 3,
     value: "エラーがあるテキスト",
-    onChange: (value: string) => {},
+    onChange: () => {},
   },
 };
 
@@ -168,6 +168,6 @@ export const Disabled: Story = {
     disabled: true,
     rows: 4,
     value: "編集できないテキスト",
-    onChange: (value: string) => {},
+    onChange: () => {},
   },
 };

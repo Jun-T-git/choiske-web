@@ -120,6 +120,7 @@ export const ScheduleForm: React.FC<ScheduleFormProps> = ({
       });
     } catch (err) {
       // エラーはuseFormSubmit内で処理されるため、ここでは何もしない
+      console.error("フォーム送信中にエラーが発生しました:", err);
     }
   };
 
