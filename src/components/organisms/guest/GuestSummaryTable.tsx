@@ -1,10 +1,31 @@
 "use client";
+import TimezoneIndicator from "@/components/atoms/TimezoneIndicator";
 import { SlotStatus } from "@/constants/slotStatus";
-import { formatMonthDay } from "@/lib/utils/dateUtils";
+import {
+  formatMonthDay,
+  isIsoDateString,
+  jstIsoToDate,
+  utcIsoToJstIso,
+} from "@/lib/utils/dateUtils";
 import { Answer } from "@/types/answer";
 import { SlotResponse } from "@/types/slotResponse";
 import { FC, useState } from "react";
 import { CommentPopover } from "./CommentPopover";
+
+/**
+ * 指定された日付文字列をJST表示用のDateオブジェクトに変換する
+ * @param dateStr UTC ISO形式の日付文字列またはその他の日付文字列
+ * @returns JST日付オブジェクト
+ */
+const toJstDate = (dateStr: string): Date => {
+  if (isIsoDateString(dateStr)) {
+    // UTCのISO文字列をJSTに変換してからDateオブジェクトに変換
+    const jstStr = utcIsoToJstIso(dateStr);
+    return jstIsoToDate(jstStr);
+  }
+  // ISO文字列でない場合は直接Dateに変換（ローカルタイムゾーン）
+  return new Date(dateStr);
+};
 
 type SlotSummary = {
   slotId: string;
@@ -94,27 +115,55 @@ export const GuestSummaryTable: FC<GuestSummaryTableProps> = ({
   const [openCommentIdx, setOpenCommentIdx] = useState<number | null>(null);
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-gray-100 bg-gradient-to-br from-white via-blue-50 to-blue-100">
+    <div className="overflow-y-auto max-h-[80vh] rounded-xl border border-gray-100 bg-gradient-to-br from-white via-blue-50 to-blue-100">
+      <div className="flex justify-end p-2">
+        <TimezoneIndicator />
+      </div>
       <table className="min-w-full text-center align-middle text-xs md:text-sm">
         <thead>
           <tr>
-            <th className="bg-white text-blue-900 font-semibold px-3 py-3 md:px-6 md:py-4 sticky left-0 z-10 shadow-sm rounded-tl-xl border-b border-blue-100 text-sm md:text-base">
+            <th className="bg-white sticky top-0 left-0 z-30 text-blue-900 font-semibold px-3 py-3 md:px-6 md:py-4 rounded-tl-xl border-b border-blue-100 text-sm md:text-base">
               日付
             </th>
             {!allDatesSingleSlot && (
-              <th className="bg-white text-blue-900 font-semibold px-3 py-3 md:px-6 md:py-4 sticky left-14 z-10 shadow-sm border-b border-blue-100 text-sm md:text-base">
+              <th className="bg-white sticky top-0 left-14 z-30 text-blue-900 font-semibold px-3 py-3 md:px-6 md:py-4 border-b border-blue-100 text-sm md:text-base">
                 時間
               </th>
             )}
-            <th className="px-3 py-3 md:px-6 md:py-4 text-blue-900 font-semibold bg-white border-b border-blue-100 text-sm md:text-base">
+            <th className="bg-white sticky top-0 z-20 px-3 py-3 md:px-6 md:py-4 text-blue-900 font-semibold border-b border-blue-100 text-sm md:text-base">
               集計
             </th>
             {answers.map((a) => (
               <th
                 key={a.id}
-                className="px-2 py-2 md:px-4 md:py-3 text-blue-900 font-semibold border-b border-blue-50 bg-white text-xs md:text-sm"
+                className="bg-white sticky top-0 z-20 px-2 py-2 md:px-4 md:py-3 text-blue-900 font-semibold border-b border-blue-50 text-xs md:text-sm"
               >
                 {a.name || "匿名"}
+              </th>
+            ))}
+          </tr>
+          <tr>
+            <th className="bg-white sticky top-[42px] left-0 z-30 text-xs text-gray-400 text-center pr-2">
+              コメント
+            </th>
+            {!allDatesSingleSlot && (
+              <th className="bg-white sticky top-[42px] z-20" />
+            )}
+            <th className="bg-white sticky top-[42px] z-20" />
+            {answers.map((a, i) => (
+              <th
+                key={a.id}
+                className="bg-white sticky top-[42px] z-10 py-1 text-center align-middle"
+              >
+                {a.comment ? (
+                  <CommentPopover
+                    comment={a.comment}
+                    open={openCommentIdx === i}
+                    onOpenChange={(v) => setOpenCommentIdx(v ? i : null)}
+                  />
+                ) : (
+                  "-"
+                )}
               </th>
             ))}
           </tr>
@@ -160,12 +209,12 @@ export const GuestSummaryTable: FC<GuestSummaryTableProps> = ({
                   showDate ? "border-t-2 border-gray-200" : ""
                 } ${gradClass}`}
               >
-                <td className="px-2 py-2 md:px-4 md:py-3 font-bold bg-gray-50 text-gray-700 sticky left-0 z-10 shadow-sm whitespace-nowrap">
-                  {showDate ? formatMonthDay(new Date(slot.date)) : ""}
+                <td className="px-2 py-2 md:px-4 md:py-3 font-bold bg-gray-50 text-gray-700 sticky left-0 z-10 whitespace-nowrap">
+                  {showDate ? formatMonthDay(toJstDate(slot.date)) : ""}
                 </td>
                 {!allDatesSingleSlot && (
                   <td
-                    className={`px-2 py-2 md:px-4 md:py-3 font-bold bg-gray-50 text-gray-700 sticky left-14 z-10 shadow-sm whitespace-nowrap${
+                    className={`px-2 py-2 md:px-4 md:py-3 font-bold bg-gray-50 text-gray-700 sticky left-14 z-10 whitespace-nowrap${
                       gradClass ? ` ${gradClass}` : ""
                     }`}
                   >
@@ -201,25 +250,6 @@ export const GuestSummaryTable: FC<GuestSummaryTableProps> = ({
               </tr>
             );
           })}
-          {/* コメントアイコン行 */}
-          <tr className="bg-white border-t border-blue-100">
-            <td className="text-xs text-gray-400 text-center pr-2">コメント</td>
-            {!allDatesSingleSlot && <td className="" />}
-            <td className="" />
-            {answers.map((a, i) => (
-              <td key={a.id} className="py-1 text-center align-middle">
-                {a.comment ? (
-                  <CommentPopover
-                    comment={a.comment}
-                    open={openCommentIdx === i}
-                    onOpenChange={(v) => setOpenCommentIdx(v ? i : null)}
-                  />
-                ) : (
-                  "-"
-                )}
-              </td>
-            ))}
-          </tr>
         </tbody>
       </table>
     </div>

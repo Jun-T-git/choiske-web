@@ -43,18 +43,20 @@ export default async function ScheduleEditPage({
 
   return (
     <main className="max-w-4xl mx-auto px-3 sm:px-8 pt-5 pb-10">
-      <ScheduleForm
-        initialData={{
-          initialTitle: schedule.title,
-          initialDescription: schedule.description || "",
-          initialSelectedDays: selectedDays,
-          initialSlotSize: slotSize,
-          initialWithTime: withTime,
-          initialTimeFrom: timeFrom,
-          initialTimeTo: timeTo,
-        }}
-        scheduleId={scheduleId}
-      />
+      <div className="bg-white/90 shadow-xl rounded-2xl px-4 py-8">
+        <ScheduleForm
+          initialData={{
+            initialTitle: schedule.title,
+            initialDescription: schedule.description || "",
+            initialSelectedDays: selectedDays,
+            initialSlotSize: slotSize,
+            initialWithTime: withTime,
+            initialTimeFrom: timeFrom,
+            initialTimeTo: timeTo,
+          }}
+          scheduleId={scheduleId}
+        />
+      </div>
     </main>
   );
 }

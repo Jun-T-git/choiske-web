@@ -1,4 +1,4 @@
-import { formatMonthDay, getDateAfterPeriod, toJstIsoString } from '@/lib/utils/dateUtils';
+import { formatMonthDay, getDateAfterPeriod, isIsoDateString, jstIsoToDate, jstIsoToUtcIso, toJstIsoString, toUtcIsoString, utcIsoToJstIso } from '@/lib/utils/dateUtils';
 import { describe, expect, it } from 'vitest';
 
 describe('dateUtils', () => {
@@ -19,6 +19,86 @@ describe('dateUtils', () => {
       
       // 日付が2日に変わる
       expect(result).toMatch(/^2023-01-02T08:00:00\+09:00$/);
+    });
+  });
+
+  describe('toUtcIsoString', () => {
+    it('日付をUTCのISO文字列に変換する', () => {
+      const date = new Date('2023-01-01T09:00:00+09:00'); // JST
+      const result = toUtcIsoString(date);
+      
+      // JST 09:00 は UTC 00:00
+      expect(result).toMatch(/^2023-01-01T00:00:00\.000Z$/);
+    });
+  });
+
+  describe('jstIsoToDate', () => {
+    it('JST ISO文字列をDateオブジェクトに変換する', () => {
+      const jstIsoString = '2023-01-01T09:00:00+09:00';
+      const result = jstIsoToDate(jstIsoString);
+      
+      // UTC時間に変換されるので、getUTC関数で確認
+      expect(result.getUTCFullYear()).toBe(2023);
+      expect(result.getUTCMonth()).toBe(0); // 0-indexed
+      expect(result.getUTCDate()).toBe(1);
+      expect(result.getUTCHours()).toBe(0); // JST 9時 = UTC 0時
+    });
+  });
+
+  describe('utcIsoToJstIso', () => {
+    it('UTC ISO文字列をJST ISO文字列に変換する', () => {
+      const utcIsoString = '2023-01-01T00:00:00.000Z';
+      const result = utcIsoToJstIso(utcIsoString);
+      
+      expect(result).toMatch(/^2023-01-01T09:00:00\+09:00$/);
+    });
+
+    it('日付境界での変換が正しく行われる', () => {
+      const utcIsoString = '2023-01-01T15:00:00.000Z';
+      const result = utcIsoToJstIso(utcIsoString);
+      
+      // UTC 15:00 = JST 24:00 (次の日の0:00)
+      expect(result).toMatch(/^2023-01-02T00:00:00\+09:00$/);
+    });
+  });
+
+  describe('jstIsoToUtcIso', () => {
+    it('JST ISO文字列をUTC ISO文字列に変換する', () => {
+      const jstIsoString = '2023-01-01T09:00:00+09:00';
+      const result = jstIsoToUtcIso(jstIsoString);
+      
+      expect(result).toMatch(/^2023-01-01T00:00:00\.000Z$/);
+    });
+
+    it('日付境界での変換が正しく行われる', () => {
+      const jstIsoString = '2023-01-02T00:00:00+09:00';
+      const result = jstIsoToUtcIso(jstIsoString);
+      
+      // JST 00:00 = UTC 前日の15:00
+      expect(result).toMatch(/^2023-01-01T15:00:00\.000Z$/);
+    });
+  });
+
+  describe('isIsoDateString', () => {
+    it('有効なISO文字列を検証する', () => {
+      expect(isIsoDateString('2023-01-01T00:00:00Z')).toBe(true);
+      expect(isIsoDateString('2023-01-01T09:00:00+09:00')).toBe(true);
+      expect(isIsoDateString('2023-01-01T15:30:45.123Z')).toBe(true);
+    });
+
+    it('無効な文字列を検証する', () => {
+      expect(isIsoDateString('2023/01/01')).toBe(false);
+      expect(isIsoDateString('not a date')).toBe(false);
+      expect(isIsoDateString('')).toBe(false);
+    });
+
+    it('タイプが文字列でない場合falseを返す', () => {
+      // @ts-ignore: テスト目的で型チェックを無視
+      expect(isIsoDateString(123)).toBe(false);
+      // @ts-ignore: テスト目的で型チェックを無視
+      expect(isIsoDateString(null)).toBe(false);
+      // @ts-ignore: テスト目的で型チェックを無視
+      expect(isIsoDateString(undefined)).toBe(false);
     });
   });
 

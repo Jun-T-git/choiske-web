@@ -1,4 +1,5 @@
 import { SlotStatus } from "@/constants/slotStatus";
+import { isIsoDateString, toJstIsoString } from "@/lib/utils/dateUtils";
 import { Answer } from "@/types/answer";
 import { SlotResponse } from "@/types/slotResponse";
 
@@ -53,12 +54,6 @@ export async function editAnswerByToken(editToken: string, payload: EditAnswerPa
 }
 
 /**
- * 回答（Answer）取得APIクライアント
- * @param answerId 回答ID
- * @returns 回答データ
- */
-
-/**
  * 編集用トークンによる回答（Answer）取得APIクライアント
  * @param editToken 編集用トークン
  * @returns 回答データ
@@ -69,5 +64,17 @@ export async function getAnswerByEditToken(editToken: string): Promise<Answer & 
     const error = await res.json().catch(() => ({}));
     throw new Error(error?.error || "Failed to fetch answer");
   }
-  return await res.json();
+  
+  const data = await res.json();
+  
+  // 日付フィールドをJST文字列に変換
+  if (data.createdAt && isIsoDateString(data.createdAt)) {
+    data.createdAt = toJstIsoString(new Date(data.createdAt));
+  }
+  
+  if (data.updatedAt && isIsoDateString(data.updatedAt)) {
+    data.updatedAt = toJstIsoString(new Date(data.updatedAt));
+  }
+  
+  return data;
 }
