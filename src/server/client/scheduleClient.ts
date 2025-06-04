@@ -166,34 +166,32 @@ export async function updateSchedule(scheduleId: string, data: CreateScheduleInp
     });
   });
 
-  // トランザクションでSlotResponse→TimeSlotの順に削除
-  const schedule = await prisma.$transaction(async (tx) => {
-    // SlotResponse削除
-    if (deletedTimeSlots.length > 0) {
-      await tx.slotResponse.deleteMany({
-        where: {
-          slotId: { in: deletedTimeSlots.map((slot) => slot.id) },
-        },
-      });
-    }
-    // スケジュール更新（TimeSlot追加・削除）
-    return await tx.schedule.update({
-      where: { id: scheduleId },
-      data: {
-        title: data.title,
-        description: data.description || null,
-        slotSizeMinutes: data.slotSizeMinutes,
-        expiresAt: data.expiresAt,
-        timeSlots: {
-          create: addedTimeSlots.map((slot) => ({
-            slotStart: new Date(slot),
-          })),
-          deleteMany: deletedTimeSlots.map((slot) => ({
-            id: slot.id,
-          })),
-        },
+  // トランザクション外でSlotResponseを先に削除（パフォーマンス向上のため）
+  if (deletedTimeSlots.length > 0) {
+    await prisma.slotResponse.deleteMany({
+      where: {
+        slotId: { in: deletedTimeSlots.map((slot) => slot.id) },
       },
     });
+  }
+
+  // スケジュール更新とTimeSlot操作のみトランザクション内で実行
+  const schedule = await prisma.schedule.update({
+    where: { id: scheduleId },
+    data: {
+      title: data.title,
+      description: data.description || null,
+      slotSizeMinutes: data.slotSizeMinutes,
+      expiresAt: data.expiresAt,
+      timeSlots: {
+        create: addedTimeSlots.map((slot) => ({
+          slotStart: new Date(slot),
+        })),
+        deleteMany: deletedTimeSlots.length > 0 ? {
+          id: { in: deletedTimeSlots.map((slot) => slot.id) }
+        } : undefined,
+      },
+    },
   });
   
   // 日付はUTC ISO文字列として返す

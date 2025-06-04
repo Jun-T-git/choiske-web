@@ -1,3 +1,4 @@
+// filepath: /Users/teraokajun/private/choiske-web/prisma/schema.prisma
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -16,6 +17,9 @@ model Schedule {
   expiresAt       DateTime    @map("expires_at")
   timeSlots       TimeSlot[]
   answers         Answer[]
+  
+  @@index([publicToken])
+  @@index([expiresAt])
 }
 
 model TimeSlot {
@@ -24,6 +28,8 @@ model TimeSlot {
   scheduleId   String      @map("schedule_id")
   slotStart    DateTime    @map("slot_start")
   slotResponses SlotResponse[]
+  
+  @@index([scheduleId, slotStart])
 }
 
 model Answer {
@@ -36,6 +42,9 @@ model Answer {
   createdAt    DateTime    @default(now()) @map("created_at")
   updatedAt    DateTime    @updatedAt @map("updated_at")
   slotResponses SlotResponse[]
+  
+  @@index([editToken])
+  @@index([scheduleId])
 }
 
 model SlotResponse {
@@ -45,4 +54,9 @@ model SlotResponse {
   slot      TimeSlot  @relation(fields: [slotId], references: [id])
   slotId    String    @map("slot_id")
   status    Int
+  
+  @@unique([answerId, slotId])
+  @@index([answerId, slotId])
+  @@index([slotId])
+  @@index([answerId])
 }

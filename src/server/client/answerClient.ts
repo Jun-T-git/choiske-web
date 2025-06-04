@@ -76,24 +76,53 @@ export async function editAnswerByToken(input: EditAnswerInput): Promise<Answer 
     include: { slotResponses: true },
   });
 
-  // 既存の回答状況を更新
-  // 1. 現在のslotResponsesを全て削除
-  await prisma.slotResponse.deleteMany({
-    where: { answerId: existingAnswer.id },
-  });
-
-  // 2. 新しいslotResponsesを作成
-  await Promise.all(
-    input.slotResponses.map((sr) =>
-      prisma.slotResponse.create({
+  // SlotResponseの差分更新（最適化）
+  // 既存の回答状況リスト
+  const existingResponses = existingAnswer.slotResponses;
+  const inputResponses = input.slotResponses;
+  
+  // 1. 追加・更新が必要なレスポンスの特定
+  const responsesToUpsert = inputResponses.map(sr => {
+    // 既存のレスポンスを検索
+    const existingResponse = existingResponses.find(er => er.slotId === sr.slotId);
+    
+    if (existingResponse) {
+      // 既存のレスポンスがあり、ステータスが異なる場合は更新
+      if (existingResponse.status !== sr.status) {
+        return prisma.slotResponse.update({
+          where: { id: existingResponse.id },
+          data: { status: sr.status }
+        });
+      }
+      // ステータスが同じ場合は何もしない
+      return null;
+    } else {
+      // 既存のレスポンスがない場合は作成
+      return prisma.slotResponse.create({
         data: {
           answerId: existingAnswer.id,
           slotId: sr.slotId,
-          status: sr.status,
-        },
-      })
-    )
-  );
+          status: sr.status
+        }
+      });
+    }
+  }).filter(Boolean); // nullを除外
+  
+  // 2. 削除が必要なレスポンスの特定（既存にあるが入力にない）
+  const responseIdsToDelete = existingResponses
+    .filter(er => !inputResponses.some(ir => ir.slotId === er.slotId))
+    .map(er => er.id);
+  
+  // 3. 必要な更新操作を実行
+  if (responseIdsToDelete.length > 0) {
+    await prisma.slotResponse.deleteMany({
+      where: { id: { in: responseIdsToDelete } }
+    });
+  }
+  
+  if (responsesToUpsert.length > 0) {
+    await Promise.all(responsesToUpsert);
+  }
 
   // 更新後のデータを取得
   const finalAnswer = await prisma.answer.findUnique({

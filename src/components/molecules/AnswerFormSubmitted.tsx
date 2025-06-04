@@ -1,5 +1,5 @@
-import { ActionButton } from "@/components/atoms/ActionButton";
 import { CopyableText } from "@/components/atoms/CopyableText";
+import { LinkButton } from "@/components/atoms/LinkButton";
 import { ShareButtons } from "@/components/molecules/ShareButtons";
 import { useRouter } from "next/navigation";
 import { FC } from "react";
@@ -40,6 +40,31 @@ export const AnswerFormSubmitted: FC<AnswerFormSubmittedProps> = ({
               label="編集用URL"
               className="break-all text-blue-600 hover:text-blue-800 font-medium"
             />
+            <div className="mt-2 text-center">
+              <LinkButton
+                href={editUrl}
+                className="inline-flex items-center px-3 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
+              >
+                編集画面に移動
+              </LinkButton>
+            </div>
+          </div>
+        )}
+        {isEdit && (
+          <div className="mt-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <CopyableText
+              value={editUrl}
+              label="編集用URL"
+              className="break-all text-blue-600 hover:text-blue-800 font-medium"
+            />
+            <div className="mt-2 text-center">
+              <LinkButton
+                href={editUrl}
+                className="inline-flex items-center px-3 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
+              >
+                編集画面を再表示
+              </LinkButton>
+            </div>
           </div>
         )}
 
@@ -53,13 +78,12 @@ export const AnswerFormSubmitted: FC<AnswerFormSubmittedProps> = ({
         </div>
       </div>
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
-        <ActionButton
-          variant="primary"
-          size="md"
-          onClick={() => router.push(`/guest/${token}/summary`)}
+        <LinkButton
+          href={`/guest/${token}/answer/edit/${editToken}`}
+          className="w-full sm:max-w-sm px-4 py-3 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md shadow-sm transition-colors"
         >
           一覧画面へ進む
-        </ActionButton>
+        </LinkButton>
       </div>
     </div>
   );

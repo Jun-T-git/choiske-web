@@ -10,6 +10,7 @@ const meta = {
   argTypes: {
     slots: { control: false },
     answers: { control: false },
+    scheduleToken: { control: "text" },
   },
 } satisfies Meta<typeof GuestSummaryTable>;
 
@@ -86,5 +87,13 @@ export const Default: Story = {
   args: {
     slots,
     answers,
+  },
+};
+
+export const WithServerSideCounting: Story = {
+  args: {
+    slots,
+    answers,
+    scheduleToken: "sample-token-123",
   },
 };
