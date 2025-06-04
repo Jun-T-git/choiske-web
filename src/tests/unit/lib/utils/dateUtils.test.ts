@@ -93,11 +93,11 @@ describe('dateUtils', () => {
     });
 
     it('タイプが文字列でない場合falseを返す', () => {
-      // @ts-ignore: テスト目的で型チェックを無視
+      // @ts-expect-error: テスト目的で型チェックを無視
       expect(isIsoDateString(123)).toBe(false);
-      // @ts-ignore: テスト目的で型チェックを無視
+      // @ts-expect-error: テスト目的で型チェックを無視
       expect(isIsoDateString(null)).toBe(false);
-      // @ts-ignore: テスト目的で型チェックを無視
+      // @ts-expect-error: テスト目的で型チェックを無視
       expect(isIsoDateString(undefined)).toBe(false);
     });
   });

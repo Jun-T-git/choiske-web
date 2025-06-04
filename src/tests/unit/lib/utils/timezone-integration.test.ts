@@ -115,10 +115,6 @@ describe('Timezone Integration Tests', () => {
       const displayDate = utcIsoToJstIso(apiResponseDate);
       expect(displayDate).toEqual('2023-05-15T10:30:00+09:00');
       
-      // 元のUTC時間とJST表示時間の関係を確認（JSTはUTC+9時間）
-      const originalUtcHours = userInputDate.getUTCHours(); // 1時間
-      const originalUtcMinutes = userInputDate.getUTCMinutes(); // 30分
-      
       // displayDateのUTC時刻がJST 10:30を正しく表す（= UTC 1:30）
       const displayDateObj = new Date(displayDate);
       const displayHours = displayDateObj.getHours();

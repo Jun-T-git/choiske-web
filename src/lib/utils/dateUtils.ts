@@ -2,7 +2,6 @@ import { addDays, addMonths, addYears, format } from 'date-fns';
 import { formatInTimeZone } from 'date-fns-tz';
 
 const JST_TIMEZONE = 'Asia/Tokyo';
-const UTC_TIMEZONE = 'UTC';
 
 /**
  * 日付をJSTのISO形式の文字列に変換する
