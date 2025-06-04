@@ -90,7 +90,11 @@ export default async function GuestSummaryPage({ params }: Props) {
             <FiUsers className="inline-block align-middle text-blue-400 w-5 h-5" />
             みんなの回答
           </h2>
-          <GuestSummaryTable slots={slots} answers={answers} />
+          <GuestSummaryTable
+            slots={slots}
+            answers={answers}
+            scheduleToken={token}
+          />
 
           <div className="mt-8 flex justify-center">
             <LinkButton

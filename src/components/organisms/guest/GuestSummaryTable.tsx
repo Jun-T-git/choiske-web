@@ -1,6 +1,7 @@
 "use client";
 import TimezoneIndicator from "@/components/atoms/TimezoneIndicator";
 import { SlotStatus } from "@/constants/slotStatus";
+import { getSlotStatusCounts } from "@/lib/queries/slotStats";
 import {
   formatMonthDay,
   isIsoDateString,
@@ -9,7 +10,7 @@ import {
 } from "@/lib/utils/dateUtils";
 import { Answer } from "@/types/answer";
 import { SlotResponse } from "@/types/slotResponse";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { CommentPopover } from "./CommentPopover";
 
 /**
@@ -40,6 +41,7 @@ type GuestSummaryTableProps = {
   answers: (Answer & {
     slotResponses: SlotResponse[];
   })[];
+  scheduleToken?: string; // スケジュールの公開トークンを追加
 };
 
 const STATUS_UI = {
@@ -60,10 +62,62 @@ const STATUS_UI = {
 export const GuestSummaryTable: FC<GuestSummaryTableProps> = ({
   slots,
   answers,
+  scheduleToken,
 }) => {
+  // サーバーサイド集計を使用する場合のstate
+  const [optimizedSlots, setOptimizedSlots] = useState<SlotSummary[]>(slots);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // scheduleTokenが提供されている場合、サーバーサイドの集計を利用
+  useEffect(() => {
+    if (scheduleToken && answers.length > 10) {
+      // 回答が多い場合のみ最適化を適用
+      const fetchOptimizedCounts = async () => {
+        try {
+          setIsLoading(true);
+          const statusCounts = await getSlotStatusCounts(scheduleToken);
+
+          // サーバーからの集計結果をスロット形式に変換
+          const optimized = statusCounts.map((item) => {
+            // スロットの日時を分離
+            const jstDate = utcIsoToJstIso(item.slotStart);
+            const dateObj = jstIsoToDate(jstDate);
+
+            return {
+              slotId: item.slotId,
+              slotStart: item.slotStart,
+              date: dateObj.toISOString().split("T")[0],
+              time: dateObj.toLocaleTimeString("ja-JP", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+              }),
+              statusCounts: item.statusCounts,
+            };
+          });
+
+          setOptimizedSlots(optimized);
+        } catch (error) {
+          console.error("Error fetching optimized slot counts:", error);
+          // エラーが発生した場合は元のデータを使用
+          setOptimizedSlots(slots);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      fetchOptimizedCounts();
+    } else {
+      setOptimizedSlots(slots);
+    }
+  }, [scheduleToken, slots, answers.length]);
+
+  // 実際に表示に使用するスロットデータ
+  const displaySlots = optimizedSlots;
+
   // 各日付ごとのスロット数を事前に集計
   const dateSlotCount: { [date: string]: number } = {};
-  slots.forEach((slot) => {
+  displaySlots.forEach((slot) => {
     dateSlotCount[slot.date] = (dateSlotCount[slot.date] || 0) + 1;
   });
 
@@ -72,14 +126,14 @@ export const GuestSummaryTable: FC<GuestSummaryTableProps> = ({
 
   // 日付の境界判定を内部で計算
   const dateBoundaries: { [rowIdx: number]: string } = {};
-  slots.forEach((slot, idx) => {
-    if (idx === 0 || slots[idx - 1].date !== slot.date) {
+  displaySlots.forEach((slot, idx) => {
+    if (idx === 0 || displaySlots[idx - 1].date !== slot.date) {
       dateBoundaries[idx] = slot.date;
     }
   });
 
   // OK数→PENDING数→NG数の順で降順ソート
-  const sortedSlots = [...slots].sort((a, b) => {
+  const sortedSlots = [...displaySlots].sort((a, b) => {
     if (b.statusCounts[SlotStatus.OK] !== a.statusCounts[SlotStatus.OK]) {
       return b.statusCounts[SlotStatus.OK] - a.statusCounts[SlotStatus.OK];
     }
@@ -116,7 +170,12 @@ export const GuestSummaryTable: FC<GuestSummaryTableProps> = ({
 
   return (
     <div className="overflow-y-auto max-h-[80vh] rounded-xl border border-gray-100 bg-gradient-to-br from-white via-blue-50 to-blue-100">
-      <div className="flex justify-end p-2">
+      <div className="flex justify-between p-2">
+        {isLoading && (
+          <span className="text-xs text-blue-600">
+            データを最適化しています...
+          </span>
+        )}
         <TimezoneIndicator />
       </div>
       <table className="min-w-full text-center align-middle text-xs md:text-sm">
@@ -169,7 +228,7 @@ export const GuestSummaryTable: FC<GuestSummaryTableProps> = ({
           </tr>
         </thead>
         <tbody>
-          {slots.map((slot, idx) => {
+          {displaySlots.map((slot, idx) => {
             // 日付の重複非表示
             const showDate =
               dateBoundaries[idx] || slots[idx - 1]?.date !== slot.date;
