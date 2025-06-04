@@ -175,7 +175,41 @@ export async function updateSchedule(scheduleId: string, data: CreateScheduleInp
     });
   }
 
-  // スケジュール更新とTimeSlot操作のみトランザクション内で実行
+  // TimeSlotの削除は既に実施済みなので、createのみ分離して実行
+  // スロットの追加が多い場合はバッチ作成する
+  if (addedTimeSlots.length > 20) {
+    await Promise.all(
+      // 20個ずつのバッチに分けて作成
+      Array.from({ length: Math.ceil(addedTimeSlots.length / 20) }, (_, i) => {
+        const batchSlots = addedTimeSlots.slice(i * 20, (i + 1) * 20);
+        return prisma.timeSlot.createMany({
+          data: batchSlots.map((slot) => ({
+            scheduleId,
+            slotStart: new Date(slot),
+          })),
+        });
+      })
+    );
+    
+    // スケジュール本体の更新のみ実施
+    const schedule = await prisma.schedule.update({
+      where: { id: scheduleId },
+      data: {
+        title: data.title,
+        description: data.description || null,
+        slotSizeMinutes: data.slotSizeMinutes,
+        expiresAt: data.expiresAt,
+      },
+    });
+    
+    return {
+      ...schedule,
+      createdAt: schedule.createdAt.toISOString(),
+      expiresAt: schedule.expiresAt.toISOString()
+    };
+  }
+  
+  // スロット数が少ない場合は通常通り更新
   const schedule = await prisma.schedule.update({
     where: { id: scheduleId },
     data: {
