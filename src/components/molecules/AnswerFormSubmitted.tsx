@@ -1,7 +1,6 @@
 import { CopyableText } from "@/components/atoms/CopyableText";
 import { LinkButton } from "@/components/atoms/LinkButton";
 import { ShareButtons } from "@/components/molecules/ShareButtons";
-import { useRouter } from "next/navigation";
 import { FC } from "react";
 
 interface AnswerFormSubmittedProps {
@@ -19,7 +18,6 @@ export const AnswerFormSubmitted: FC<AnswerFormSubmittedProps> = ({
   editToken,
   isEdit,
 }) => {
-  const router = useRouter();
   const editUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/guest/${token}/answer/edit/${editToken}`;
 
   return (
