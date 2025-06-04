@@ -1,5 +1,6 @@
 import { SectionHeading } from "@/components/atoms/SectionHeading";
 import { AnswerForm } from "@/components/templates/AnswerForm";
+import { SlotStatus } from "@/constants/slotStatus";
 import { getAnswerByEditToken } from "@/lib/queries/answer";
 import { fetchScheduleByToken } from "@/lib/queries/schedule";
 import { notFound } from "next/navigation";
@@ -14,13 +15,28 @@ const EditAnswerPage: FC<EditAnswerPageProps> = async ({ params }) => {
   if (!token || !editToken) notFound();
 
   try {
-    // スケジュールを取得
-    const schedule = await fetchScheduleByToken(token);
-    if (!schedule) notFound();
+    // スケジュールと回答を並列で取得
+    const [schedule, answer] = await Promise.all([
+      fetchScheduleByToken(token),
+      getAnswerByEditToken(editToken),
+    ]);
+    if (!schedule || !answer || answer.scheduleId !== schedule.id) notFound();
 
-    // 回答を取得
-    const answer = await getAnswerByEditToken(editToken);
-    if (!answer || answer.scheduleId !== schedule.id) notFound();
+    // answer.slotResponsesに未回答のtimeSlotsが存在する場合は未定ステータスで仮埋めする
+    // （スケジュール編集で日程が追加された場合の対応）
+    const unansweredSlots = schedule.timeSlots.filter(
+      (slot) =>
+        !answer.slotResponses.some((response) => response.slotId === slot.id)
+    );
+    const slotResponses = [...answer.slotResponses];
+    unansweredSlots.forEach((slot) => {
+      slotResponses.push({
+        id: "", // 新規作成時はIDは空
+        answerId: answer.id,
+        slotId: slot.id,
+        status: SlotStatus.PENDING, // 未回答は「未定」として扱う
+      });
+    });
 
     const { title, description, timeSlots } = schedule;
 
@@ -46,7 +62,7 @@ const EditAnswerPage: FC<EditAnswerPageProps> = async ({ params }) => {
             mode="edit"
             initialName={answer.name}
             initialComment={answer.comment}
-            initialResponses={answer.slotResponses}
+            initialResponses={slotResponses}
           />
         </div>
       </main>

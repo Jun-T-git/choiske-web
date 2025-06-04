@@ -1,5 +1,6 @@
 "use client";
 
+import TimezoneIndicator from "@/components/atoms/TimezoneIndicator";
 import { BaseForm } from "@/components/molecules/BaseForm";
 import { FormButton } from "@/components/molecules/FormButton";
 import { DateSelectSection } from "@/components/organisms/host/DateSelectSection";
@@ -8,6 +9,11 @@ import { TitleInputSection } from "@/components/organisms/host/TitleInputSection
 import { useFormSubmit } from "@/lib/hooks/useFormSubmit";
 import { useScheduleSelect } from "@/lib/hooks/useScheduleSelect";
 import { createSchedule, updateSchedule } from "@/lib/queries/schedule";
+import {
+  isIsoDateString,
+  jstIsoToDate,
+  utcIsoToJstIso,
+} from "@/lib/utils/dateUtils";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import "react-day-picker/dist/style.css";
@@ -48,12 +54,22 @@ export const ScheduleForm: React.FC<ScheduleFormProps> = ({
   const {
     initialTitle = "",
     initialDescription = "",
-    initialSelectedDays = [],
-    initialSlotSize,
-    initialWithTime,
-    initialTimeFrom,
-    initialTimeTo,
+    initialSelectedDays = [], // この値はUTC ISOフォーマットの配列
+    initialSlotSize = 60,
+    initialWithTime = true,
+    initialTimeFrom = "09:00",
+    initialTimeTo = "19:00",
   } = initialData;
+
+  // UTCフォーマットのデータをJSTのDateオブジェクトに変換
+  const convertedInitialSelectedDays = initialSelectedDays.map((dateStr) => {
+    if (isIsoDateString(dateStr)) {
+      // UTCのISO文字列をJSTに変換してからDateオブジェクトに変換
+      const jstStr = utcIsoToJstIso(dateStr);
+      return jstIsoToDate(jstStr);
+    }
+    return new Date(dateStr);
+  });
 
   // タイトルと説明
   const [title, setTitle] = useState(initialTitle);
@@ -63,11 +79,11 @@ export const ScheduleForm: React.FC<ScheduleFormProps> = ({
 
   // スケジュール選択の統合ロジック
   const scheduleSelect = useScheduleSelect({
-    initialSelectedDays: initialSelectedDays.map((day) => new Date(day)),
-    initialWithTime,
+    initialSelectedDays: convertedInitialSelectedDays,
     initialTimeFrom,
     initialTimeTo,
     initialSlotSize,
+    initialWithTime,
   });
 
   // フォーム送信処理用のカスタムフック
@@ -105,7 +121,7 @@ export const ScheduleForm: React.FC<ScheduleFormProps> = ({
     e.preventDefault();
 
     try {
-      // 選択された日付と時間からスロットを生成
+      // 選択された日付と時間からスロットを生成（UTC時間に変換）
       const slots = scheduleSelect.generateFullTimeSlots();
       // 終日選択時は1440分（1日）、それ以外は指定された分数
       const slotSizeMinutes = scheduleSelect.withTime
@@ -170,6 +186,10 @@ export const ScheduleForm: React.FC<ScheduleFormProps> = ({
         mode={scheduleId ? "edit" : "create"}
         onTimeError={(error) => (scheduleSelect.timeError = error)}
       />
+
+      <div className="flex justify-end mt-2 mb-4">
+        <TimezoneIndicator />
+      </div>
 
       <FormButton
         isSubmitting={isSubmitting}

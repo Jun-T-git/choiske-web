@@ -1,3 +1,4 @@
+import { toUtcIsoString } from "@/lib/utils/dateUtils";
 import { validateTimeFormat, validateTimeRange } from "@/lib/utils/validationUtils";
 import { useEffect, useState } from "react";
 import { useDateSelect } from "./useDateSelect";
@@ -75,7 +76,8 @@ export function useScheduleSelect(options?: {
   };
 
   /**
-   * 日付と時間からスロットを生成
+   * 日付と時間からスロットを生成（タイムゾーン考慮版）
+   * 生成されたスロットはUTC時間でのISO文字列として返却
    */
   const generateFullTimeSlots = () => {
     const timeSlots = generateTimeSlots();
@@ -83,10 +85,13 @@ export function useScheduleSelect(options?: {
     
     dateSelect.selectedDays.forEach(day => {
       timeSlots.forEach(timeStr => {
+        // 日本時間の日付と時刻を設定
         const slot = new Date(day);
         const [hour, minute] = timeStr.split(":").map(Number);
         slot.setHours(hour, minute, 0, 0);
-        fullSlots.push(slot.toISOString());
+        
+        // 明示的にUTC ISO文字列に変換
+        fullSlots.push(toUtcIsoString(slot));
       });
     });
     

@@ -1,3 +1,4 @@
+import { toUtcIsoString } from "@/lib/utils/dateUtils";
 import { prisma } from "@/server/client/prisma";
 import { Schedule, ScheduleWithAnswers } from "@/types/schedule";
 import { TimeSlot } from "@/types/timeSlot";
@@ -24,13 +25,14 @@ export async function createSchedule(input: CreateScheduleInput): Promise<Schedu
       expiresAt: input.expiresAt,
       timeSlots: {
         create: input.slots.map((slot: string) => ({
+          // 明示的にUTCとして保存
           slotStart: new Date(slot)
         })),
       },
     },
   });
   
-  // DateはISO文字列に変換して返す
+  // DateはISO文字列に変換して返す（DBはUTC、APIレスポンスもUTC）
   return {
     ...schedule,
     createdAt: schedule.createdAt.toISOString(),
@@ -54,13 +56,15 @@ export async function getScheduleById(
       include: { timeSlots: { orderBy: { slotStart: 'asc' } } },
     });
     if (!schedule) return null;
+    
+    // 日付はUTC ISO文字列として返す
     return {
       ...schedule,
       createdAt: schedule.createdAt.toISOString(),
       expiresAt: schedule.expiresAt.toISOString(),
       timeSlots: schedule.timeSlots.map(slot => ({
         ...slot,
-        slotStart: slot.slotStart.toISOString(),
+        slotStart: toUtcIsoString(slot.slotStart),  // 明示的にtoUtcIsoStringを使用
       })),
     };
   } else {
@@ -69,6 +73,8 @@ export async function getScheduleById(
       where: { id: scheduleId },
     });
     if (!schedule) return null;
+    
+    // 日付はUTC ISO文字列として返す
     return {
       ...schedule,
       createdAt: schedule.createdAt.toISOString(),
@@ -97,13 +103,15 @@ export async function getScheduleByToken(publicToken: string, includeAnswers: bo
       },
     });
     if (!schedule) return null;
+    
+    // 日付はUTC ISO文字列として返す
     return {
       ...schedule,
       createdAt: schedule.createdAt.toISOString(),
       expiresAt: schedule.expiresAt.toISOString(),
       timeSlots: schedule.timeSlots.map(slot => ({
         ...slot,
-        slotStart: slot.slotStart.toISOString(),
+        slotStart: toUtcIsoString(slot.slotStart),  // 明示的にtoUtcIsoStringを使用
       })),
       answers: schedule.answers.map(answer => ({
         ...answer,
@@ -119,13 +127,15 @@ export async function getScheduleByToken(publicToken: string, includeAnswers: bo
     include: { timeSlots: { orderBy: { slotStart: 'asc' } } },
   });
   if (!schedule) return null;
+  
+  // 日付はUTC ISO文字列として返す
   return {
     ...schedule,
     createdAt: schedule.createdAt.toISOString(),
     expiresAt: schedule.expiresAt.toISOString(),
     timeSlots: schedule.timeSlots.map(slot => ({
       ...slot,
-      slotStart: slot.slotStart.toISOString(),
+      slotStart: toUtcIsoString(slot.slotStart),  // 明示的にtoUtcIsoStringを使用
     })),
   };
 }
@@ -144,40 +154,49 @@ export async function updateSchedule(scheduleId: string, data: CreateScheduleInp
     where: { scheduleId },
   });
 
-  // 追加するタイムスロット
+  // 追加・削除スロットの判定
   const addedTimeSlots = data.slots.filter((slot) => {
-    // data.slotsに存在するが、既存のスロットには存在しない場合
     return !existingTimeSlots.some((existingSlot) => {
       return existingSlot.slotStart.toISOString() === new Date(slot).toISOString();
     });
   });
-
-  // 削除するタイムスロット
   const deletedTimeSlots = existingTimeSlots.filter((existingSlot) => {
-    // 既存のスロットがdata.slotsに存在しない場合
     return !data.slots.some((slot) => {
       return existingSlot.slotStart.toISOString() === new Date(slot).toISOString();
     });
   });
 
-  // スケジュールを更新
-  const schedule = await prisma.schedule.update({
-    where: { id: scheduleId },
-    data: {
-      title: data.title,
-      description: data.description || null,
-      slotSizeMinutes: data.slotSizeMinutes,
-      expiresAt: data.expiresAt,
-      timeSlots: {
-        create: addedTimeSlots.map((slot) => ({
-          slotStart: new Date(slot),
-        })),
-        deleteMany: deletedTimeSlots.map((slot) => ({
-          id: slot.id,
-        })),
+  // トランザクションでSlotResponse→TimeSlotの順に削除
+  const schedule = await prisma.$transaction(async (tx) => {
+    // SlotResponse削除
+    if (deletedTimeSlots.length > 0) {
+      await tx.slotResponse.deleteMany({
+        where: {
+          slotId: { in: deletedTimeSlots.map((slot) => slot.id) },
+        },
+      });
+    }
+    // スケジュール更新（TimeSlot追加・削除）
+    return await tx.schedule.update({
+      where: { id: scheduleId },
+      data: {
+        title: data.title,
+        description: data.description || null,
+        slotSizeMinutes: data.slotSizeMinutes,
+        expiresAt: data.expiresAt,
+        timeSlots: {
+          create: addedTimeSlots.map((slot) => ({
+            slotStart: new Date(slot),
+          })),
+          deleteMany: deletedTimeSlots.map((slot) => ({
+            id: slot.id,
+          })),
+        },
       },
-    },
+    });
   });
+  
+  // 日付はUTC ISO文字列として返す
   return {
     ...schedule,
     createdAt: schedule.createdAt.toISOString(),

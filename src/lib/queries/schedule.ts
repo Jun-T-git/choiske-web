@@ -1,4 +1,4 @@
-import { toJstIsoString } from "@/lib/utils/dateUtils";
+import { isIsoDateString, toJstIsoString, toUtcIsoString } from "@/lib/utils/dateUtils";
 import { Schedule, ScheduleSummary, ScheduleWithAnswers } from "@/types/schedule";
 import { TimeSlot } from "@/types/timeSlot";
 
@@ -18,16 +18,19 @@ export async function createSchedule(
   // slotsをUTCのISO文字列に変換
   const utcSlots = slots.map(slot => {
     if (typeof slot === 'string') {
-      // 既にISO文字列ならDateに変換してからtoISOString
+      // 既にISO文字列なら変換してからUTC ISOに
       return new Date(slot).toISOString();
     }
-    return slot.toISOString();
+    // DateオブジェクトならUTC ISOに
+    return toUtcIsoString(slot);
   });
+  
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/schedules`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({title, description, slotSizeMinutes, slots: utcSlots}),
   });
+  
   if (!res.ok) {
     throw new Error("Failed to create schedule");
   }
@@ -47,13 +50,21 @@ export async function fetchScheduleSummaryById(
     throw new Error("Failed to fetch schedule summary");
   }
   const data = await res.json();
-  // JST文字列に変換（例: slotsや日付フィールドがあれば変換）
-  if (data.slots) {
-    data.slots = data.slots.map((slot: string) => toJstIsoString(new Date(slot)));
+  
+  // レスポンスの日付フィールドをJSTに変換
+  if (data.slots && Array.isArray(data.slots)) {
+    data.slots = data.slots.map((slot: string) => {
+      if (isIsoDateString(slot)) {
+        return toJstIsoString(new Date(slot));
+      }
+      return slot;
+    });
   }
-  if (data.date) {
+  
+  if (data.date && isIsoDateString(data.date)) {
     data.date = toJstIsoString(new Date(data.date));
   }
+  
   return data;
 }
 
@@ -70,13 +81,17 @@ export async function fetchScheduleById(
     throw new Error("Failed to fetch schedule");
   }
   const data = await res.json();
-  // JST文字列に変換
-  if (data.timeSlots) {
+  
+  // timeSlots内の日付をJST文字列に変換
+  if (data.timeSlots && Array.isArray(data.timeSlots)) {
     data.timeSlots = data.timeSlots.map((slot: TimeSlot) => ({
       ...slot,
-      slotStart: toJstIsoString(new Date(slot.slotStart)),
+      slotStart: isIsoDateString(slot.slotStart) 
+        ? toJstIsoString(new Date(slot.slotStart))
+        : slot.slotStart,
     }));
   }
+  
   return data;
 }
 
@@ -93,12 +108,17 @@ export async function fetchScheduleByToken(
     throw new Error("Failed to fetch schedule by token");
   }
   const data = await res.json();
-  if (data.timeSlots) {
+  
+  // timeSlots内の日付をJST文字列に変換
+  if (data.timeSlots && Array.isArray(data.timeSlots)) {
     data.timeSlots = data.timeSlots.map((slot: TimeSlot) => ({
       ...slot,
-      slotStart: toJstIsoString(new Date(slot.slotStart)),
+      slotStart: isIsoDateString(slot.slotStart) 
+        ? toJstIsoString(new Date(slot.slotStart))
+        : slot.slotStart,
     }));
   }
+  
   return data;
 }
 
@@ -120,15 +140,19 @@ export async function updateSchedule(
   // slotsをUTCのISO文字列に変換
   const utcSlots = slots.map(slot => {
     if (typeof slot === 'string') {
+      // 既にISO文字列なら変換してからUTC ISOに
       return new Date(slot).toISOString();
     }
-    return slot.toISOString();
+    // DateオブジェクトならUTC ISOに
+    return toUtcIsoString(slot);
   });
+  
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/schedules/${scheduleId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ title, description, slotSizeMinutes, slots: utcSlots }),
   });
+  
   if (!res.ok) {
     throw new Error("Failed to update schedule");
   }
@@ -148,12 +172,16 @@ export async function fetchScheduleWithAnswersByToken(
     throw new Error("Failed to fetch schedule with answers by token");
   }
   const data = await res.json();
-  // JST変換（例: timeSlots, answersなど必要な日付フィールドを変換）
-  if (data.timeSlots) {
+  
+  // timeSlots内の日付をJST文字列に変換
+  if (data.timeSlots && Array.isArray(data.timeSlots)) {
     data.timeSlots = data.timeSlots.map((slot: TimeSlot) => ({
       ...slot,
-      slotStart: toJstIsoString(new Date(slot.slotStart)),
+      slotStart: isIsoDateString(slot.slotStart) 
+        ? toJstIsoString(new Date(slot.slotStart))
+        : slot.slotStart,
     }));
   }
+  
   return data;
 }

@@ -13,6 +13,55 @@ export function toJstIsoString(date: Date): string {
 }
 
 /**
+ * 日付をUTCのISO形式の文字列に変換する
+ * @param date - Dateオブジェクト
+ * @returns UTCのISO形式の文字列
+ */
+export function toUtcIsoString(date: Date): string {
+  return date.toISOString();
+}
+
+/**
+ * JST表記の日付文字列をDate型に変換する
+ * @param isoString - JSTのISO形式の文字列
+ * @returns Dateオブジェクト
+ */
+export function jstIsoToDate(isoString: string): Date {
+  return new Date(isoString);
+}
+
+/**
+ * UTC表記の日付文字列をJSTのISO形式の文字列に変換する
+ * @param utcIsoString - UTCのISO形式の文字列
+ * @returns JSTのISO形式の文字列
+ */
+export function utcIsoToJstIso(utcIsoString: string): string {
+  const date = new Date(utcIsoString);
+  return toJstIsoString(date);
+}
+
+/**
+ * JST表記の日付文字列をUTCのISO形式の文字列に変換する
+ * @param jstIsoString - JSTのISO形式の文字列
+ * @returns UTCのISO形式の文字列
+ */
+export function jstIsoToUtcIso(jstIsoString: string): string {
+  const date = jstIsoToDate(jstIsoString);
+  return toUtcIsoString(date);
+}
+
+/**
+ * 文字列がISO形式の日付文字列かどうかを判定する
+ * @param str - 検証する文字列
+ * @returns ISO形式の日付文字列ならtrue
+ */
+export function isIsoDateString(str: string): boolean {
+  if (typeof str !== 'string') return false;
+  const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:?\d{2})$/;
+  return isoRegex.test(str) && !isNaN(Date.parse(str));
+}
+
+/**
  * 指定した期間後の日時を取得する（1年後, 1日後, 3ヶ月後など）
  * @param date - Dateオブジェクト
  * @param period - 期間（例: { years: 1, months: 0, days: 0 }）

@@ -1,3 +1,4 @@
+import { toUtcIsoString } from "@/lib/utils/dateUtils";
 import { prisma } from "@/server/client/prisma";
 import { Answer } from "@/types/answer";
 import { SlotResponse } from "@/types/slotResponse";
@@ -39,11 +40,12 @@ export async function createAnswer(input: CreateAnswerInput): Promise<Answer & {
     },
   });
   if (!answer) return null;
-  // DateはISO文字列に変換して返す
+  
+  // DateはUTC ISO文字列に変換して返す（明示的）
   return {
     ...answer,
-    createdAt: answer.createdAt.toISOString(),
-    updatedAt: answer.updatedAt.toISOString(),
+    createdAt: toUtcIsoString(answer.createdAt),
+    updatedAt: toUtcIsoString(answer.updatedAt),
     slotResponses: answer.slotResponses.map((sr) => ({
       ...sr,
     })),
@@ -101,11 +103,11 @@ export async function editAnswerByToken(input: EditAnswerInput): Promise<Answer 
 
   if (!finalAnswer) return null;
 
-  // DateはISO文字列に変換して返す
+  // DateはUTC ISO文字列に変換して返す（明示的）
   return {
     ...finalAnswer,
-    createdAt: finalAnswer.createdAt.toISOString(),
-    updatedAt: finalAnswer.updatedAt.toISOString(),
+    createdAt: toUtcIsoString(finalAnswer.createdAt),
+    updatedAt: toUtcIsoString(finalAnswer.updatedAt),
     slotResponses: finalAnswer.slotResponses,
   };
 }
@@ -123,11 +125,11 @@ export async function getAnswerByEditToken(editToken: string): Promise<(Answer &
   
   if (!answer) return null;
   
-  // DateはISO文字列に変換して返す
+  // DateはUTC ISO文字列に変換して返す（明示的）
   return {
     ...answer,
-    createdAt: answer.createdAt.toISOString(),
-    updatedAt: answer.updatedAt.toISOString(),
+    createdAt: toUtcIsoString(answer.createdAt),
+    updatedAt: toUtcIsoString(answer.updatedAt),
     slotResponses: answer.slotResponses,
   };
 }
